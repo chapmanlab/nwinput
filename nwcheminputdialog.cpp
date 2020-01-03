@@ -766,7 +766,6 @@ namespace Avogadro
     /*****************
      * Task
      * ***************/
-    mol << "task ";
     mol << printTask(m_theoryType) ;
     mol << getCalculationType(m_calculationType) <<"\n\n"<< endl;
 
