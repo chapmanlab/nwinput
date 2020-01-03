@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1250</width>
-    <height>862</height>
+    <height>916</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -140,6 +140,16 @@
       <enum>QFrame::Raised</enum>
      </property>
      <layout class="QGridLayout" name="gridLayout_6">
+      <item row="4" column="0">
+       <widget class="QLabel" name="label_14">
+        <property name="text">
+         <string>Frontier +/-</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
       <item row="4" column="3">
        <widget class="QLabel" name="label_18">
         <property name="text">
@@ -147,16 +157,6 @@
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="9" column="0">
-       <widget class="QLineEdit" name="lineEdit_transden">
-        <property name="text">
-         <string extracomment="transden separated by commas"/>
-        </property>
-        <property name="placeholderText">
-         <string>states (comma separated)</string>
         </property>
        </widget>
       </item>
@@ -279,16 +279,6 @@
         </property>
        </widget>
       </item>
-      <item row="4" column="0">
-       <widget class="QLabel" name="label_14">
-        <property name="text">
-         <string>Frontier +/-</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-      </item>
       <item row="3" column="0">
        <widget class="QLabel" name="label_12">
         <property name="text">
@@ -301,32 +291,6 @@
       </item>
       <item row="3" column="5">
        <widget class="QSpinBox" name="spinBox_cubep1">
-        <property name="maximum">
-         <number>200</number>
-        </property>
-        <property name="singleStep">
-         <number>5</number>
-        </property>
-        <property name="value">
-         <number>25</number>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="6">
-       <widget class="QSpinBox" name="spinBox_cubep2">
-        <property name="maximum">
-         <number>200</number>
-        </property>
-        <property name="singleStep">
-         <number>5</number>
-        </property>
-        <property name="value">
-         <number>25</number>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="7">
-       <widget class="QSpinBox" name="spinBox_cubep3">
         <property name="maximum">
          <number>200</number>
         </property>
@@ -362,6 +326,32 @@
         </item>
        </widget>
       </item>
+      <item row="3" column="6">
+       <widget class="QSpinBox" name="spinBox_cubep2">
+        <property name="maximum">
+         <number>200</number>
+        </property>
+        <property name="singleStep">
+         <number>5</number>
+        </property>
+        <property name="value">
+         <number>25</number>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="7">
+       <widget class="QSpinBox" name="spinBox_cubep3">
+        <property name="maximum">
+         <number>200</number>
+        </property>
+        <property name="singleStep">
+         <number>5</number>
+        </property>
+        <property name="value">
+         <number>25</number>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
@@ -374,7 +364,51 @@
       <enum>QFrame::Raised</enum>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
-      <item row="0" column="3">
+      <item row="0" column="1">
+       <widget class="QComboBox" name="comboBox_calc2">
+        <property name="currentIndex">
+         <number>1</number>
+        </property>
+        <item>
+         <property name="text">
+          <string>Single Point Energy</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Geometry Optimization</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Frequencies</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QComboBox" name="comboBox_calc3">
+        <property name="currentIndex">
+         <number>1</number>
+        </property>
+        <item>
+         <property name="text">
+          <string>Single Point Energy</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Geometry Optimization</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Frequencies</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="0" column="2">
        <widget class="QComboBox" name="comboBox_calc2theory">
         <property name="currentIndex">
          <number>1</number>
@@ -411,32 +445,6 @@
         </item>
        </widget>
       </item>
-      <item row="0" column="1">
-       <widget class="QLabel" name="label_19">
-        <property name="text">
-         <string>Calc 2:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="2">
-       <widget class="QComboBox" name="comboBox_calc3">
-        <item>
-         <property name="text">
-          <string>Single Point Energy</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Geometry Optimization</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Frequencies</string>
-         </property>
-        </item>
-       </widget>
-      </item>
       <item row="1" column="6">
        <widget class="QSpinBox" name="spinBox_iter3">
         <property name="whatsThis">
@@ -450,7 +458,7 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="5">
+      <item row="1" column="4">
        <widget class="QComboBox" name="comboBox_basis3">
         <property name="currentIndex">
          <number>8</number>
@@ -517,6 +525,19 @@
         </item>
        </widget>
       </item>
+      <item row="0" column="0">
+       <widget class="QCheckBox" name="checkBox_opt2">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Calc. 2</string>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="6">
        <widget class="QSpinBox" name="spinBox_iter2">
         <property name="whatsThis">
@@ -530,27 +551,7 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
-       <widget class="QLabel" name="label_20">
-        <property name="text">
-         <string>Calc 3</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QCheckBox" name="checkBox_opt2">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="5">
+      <item row="0" column="4">
        <widget class="QComboBox" name="comboBox_basis2">
         <property name="currentIndex">
          <number>2</number>
@@ -617,14 +618,7 @@
         </item>
        </widget>
       </item>
-      <item row="1" column="4">
-       <widget class="QCheckBox" name="checkBox_xyz3">
-        <property name="text">
-         <string>xyz</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="3">
+      <item row="1" column="2">
        <widget class="QComboBox" name="comboBox_calc3theory">
         <property name="currentIndex">
          <number>1</number>
@@ -661,29 +655,17 @@
         </item>
        </widget>
       </item>
-      <item row="0" column="2">
-       <widget class="QComboBox" name="comboBox_calc2">
-        <item>
-         <property name="text">
-          <string>Single Point Energy</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Geometry Optimization</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Frequencies</string>
-         </property>
-        </item>
+      <item row="1" column="3">
+       <widget class="QCheckBox" name="checkBox_xyz3">
+        <property name="text">
+         <string>XYZ</string>
+        </property>
        </widget>
       </item>
-      <item row="0" column="4">
+      <item row="0" column="3">
        <widget class="QCheckBox" name="checkBox_xyz2">
         <property name="text">
-         <string>xyz</string>
+         <string>XYZ</string>
         </property>
        </widget>
       </item>
@@ -693,7 +675,21 @@
          <bool>false</bool>
         </property>
         <property name="text">
-         <string/>
+         <string>Calc. 3</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="5">
+       <widget class="QLabel" name="label_30">
+        <property name="text">
+         <string>Geom Iter:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="5">
+       <widget class="QLabel" name="label_34">
+        <property name="text">
+         <string>Geom Iter:</string>
         </property>
        </widget>
       </item>
@@ -708,10 +704,10 @@
      <zorder>spinBox_iter3</zorder>
      <zorder>comboBox_calc2</zorder>
      <zorder>comboBox_calc3</zorder>
-     <zorder>label_19</zorder>
-     <zorder>label_20</zorder>
      <zorder>checkBox_opt2</zorder>
      <zorder>checkBox_opt3</zorder>
+     <zorder>label_30</zorder>
+     <zorder>label_34</zorder>
     </widget>
    </item>
    <item row="8" column="0">
@@ -900,7 +896,7 @@
        <item>
         <widget class="QLabel" name="label_9">
          <property name="text">
-          <string>max iter</string>
+          <string>Max SCF Iter</string>
          </property>
         </widget>
        </item>
@@ -911,6 +907,30 @@
          </property>
          <property name="maximum">
           <number>300</number>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_19">
+         <property name="text">
+          <string>Geom Iter:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QSpinBox" name="spinBox_geomIter">
+         <property name="maximum">
+          <number>1000</number>
+         </property>
+         <property name="value">
+          <number>50</number>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="checkBox_xyz">
+         <property name="text">
+          <string>XYZ</string>
          </property>
         </widget>
        </item>
@@ -1257,7 +1277,7 @@
      <item row="7" column="2">
       <widget class="QCheckBox" name="checkBox_geomxyz">
        <property name="text">
-        <string>xyz file</string>
+        <string>XYZ file</string>
        </property>
       </widget>
      </item>
@@ -1309,6 +1329,9 @@
           <widget class="QDoubleSpinBox" name="doubleSpinBox_refVis">
            <property name="maximum">
             <double>1000.000000000000000</double>
+           </property>
+           <property name="singleStep">
+            <double>0.050000000000000</double>
            </property>
           </widget>
          </item>
@@ -1485,10 +1508,13 @@
       <item row="9" column="6">
        <widget class="QDoubleSpinBox" name="doubleSpinBox_endVis">
         <property name="maximum">
-         <double>10000.000000000000000</double>
+         <double>5000.000000000000000</double>
+        </property>
+        <property name="singleStep">
+         <double>0.050000000000000</double>
         </property>
         <property name="value">
-         <double>1000.000000000000000</double>
+         <double>25.000000000000000</double>
         </property>
        </widget>
       </item>
@@ -1594,7 +1620,6 @@
   <zorder>frame_2</zorder>
   <zorder>frame_3</zorder>
   <zorder>frame_4</zorder>
-  <zorder></zorder>
   <zorder>moreButton</zorder>
   <zorder>label_16</zorder>
   <zorder>label_8</zorder>

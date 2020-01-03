@@ -58,6 +58,7 @@ namespace Avogadro
     QString printRttddft();
     QString m_geomFileName;
 
+
     double convertUnits(int,int,double);
 
   protected:
@@ -80,7 +81,7 @@ namespace Avogadro
     polarizationType m_polarization;
     double m_tmax, m_dt, m_fcenter, m_fmax, m_fwidth, m_ffreq;
     double m_vstart, m_vend, m_vref;
-    bool rtVis,m_rt,m_rtRestart,m_cis;
+    bool rtVis,m_rt,m_rtRestart,m_cis,m_visRef;
     //int m_multiplicity;
     //int m_charge;
     QString m_output;
@@ -90,7 +91,7 @@ namespace Avogadro
     bool m_warned;
     bool m_openShell;
     int optiter,optiter2,optiter3;
-    int nmaxiter,nmaxiter2,nmaxiter3;
+    int nmaxiter,nmaxiter2,nmaxiter3,m_nmaxitergeom;
     int nroots,ntddftiter;
 
     // Generate an input deck as a string
@@ -103,6 +104,9 @@ namespace Avogadro
     QString getOpenShell(bool n);
     QString getfieldType(fieldType t);
     QString getpolarizationType(polarizationType t);
+    QString printBasisDeck(basisType t);
+    QString printTheory(theoryType t );
+    QString printTask(theoryType);
 
     // Enable/disable form elements
     void deckDirty(bool);
@@ -144,6 +148,7 @@ namespace Avogadro
     void maxiter3Changed(int);
     void maxiter2Changed(int);
     void maxiterChanged(int);
+    void maxitergeomChanged(int);
     void tddftiterChanged(int);
     void nrootsChanged(int);
     void setSpin(int);
@@ -153,6 +158,7 @@ namespace Avogadro
     void setrtVis(bool);
     void setRestart(bool);
     void setCis(bool);
+    void setVisRef(bool);
   };
 }
 

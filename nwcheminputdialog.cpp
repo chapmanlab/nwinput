@@ -45,7 +45,8 @@ namespace Avogadro
     m_theoryType(B3LYP), m_basisType(B321g),m_basisType2(B631g),m_basisType3(ccpvtz),m_tt2(PBE0),m_tt3(PBE0),
     m_output(), m_coordType(CARTESIAN), m_dirty(false), m_warned(false),nmaxiter(50),nmaxiter2(50),nmaxiter3(50),
     ntddftiter(1000),nroots(1),m_plotspin(total),m_openShell(false),m_ffreq(1.0),m_fcenter(5.0),m_fwidth(5.0),rtVis(false),
-    m_rt(false),m_tmax(25.),m_dt(1.),m_rtRestart(false),m_cis(false)
+    m_rt(false),m_tmax(25.),m_dt(1.),m_rtRestart(false),m_cis(false),m_visRef(false),m_vend(25.0),m_vstart(0.),
+    m_calculationType2(OPT),m_calculationType3(OPT),m_nmaxitergeom(50)
   {
     ui.setupUi(this);
 
@@ -102,6 +103,8 @@ namespace Avogadro
         this, SLOT(opt2Changed(int)));
     connect(ui.checkBox_opt3, SIGNAL(stateChanged(int)),
         this, SLOT(opt2Changed(int)));
+    connect(ui.checkBox_xyz, SIGNAL(stateChanged(int)),
+         this, SLOT(opt2Changed(int)));
     connect(ui.checkBox_xyz2, SIGNAL(stateChanged(int)),
          this, SLOT(opt2Changed(int)));
     connect(ui.checkBox_xyz3, SIGNAL(stateChanged(int)),
@@ -150,12 +153,28 @@ namespace Avogadro
           this, SLOT(setRestart(bool)));
     connect(ui.checkBox_cis, SIGNAL(toggled(bool)),
           this, SLOT(setCis(bool)));
+    connect(ui.checkBox_visRef, SIGNAL(toggled(bool)),
+          this, SLOT(setVisRef(bool)));
+    connect(ui.doubleSpinBox_refVis, SIGNAL(valueChanged(double)),
+          this, SLOT(opt2Changed(double)));
+    connect(ui.doubleSpinBox_startVis, SIGNAL(valueChanged(double)),
+          this, SLOT(opt2Changed(double)));
+    connect(ui.doubleSpinBox_endVis, SIGNAL(valueChanged(double)),
+          this, SLOT(opt2Changed(double)));
+    connect(ui.spinBox_geomIter, SIGNAL(valueChanged(int)),
+          this, SLOT(maxitergeomChanged(int)));
+
 
     QSettings settings;
     readSettings(settings);
 
     // Generate an initial preview of the input deck
     setJob();
+    updatePreviewText();
+  }
+
+  void NWChemInputDialog::setVisRef(bool n) {
+    m_visRef = n;
     updatePreviewText();
   }
 
@@ -187,6 +206,10 @@ namespace Avogadro
   }
   void NWChemInputDialog::setOpenShell(bool n) {
       m_openShell = n;
+      updatePreviewText();
+  }
+  void NWChemInputDialog::maxitergeomChanged(int str) {
+      m_nmaxitergeom = str;
       updatePreviewText();
   }
   void NWChemInputDialog::maxiterChanged(int str) {
@@ -462,6 +485,81 @@ namespace Avogadro
           return "";
   }
 
+
+  QString NWChemInputDialog::printBasisDeck(basisType t) {
+      QString str;
+      // Basis set
+      str += "basis";
+
+      // Need spherical keyword if using Dunning correlation consistent basis sets
+      if ( t == ccpvdz || t == ccpvtz || t == augccpvdz || t == augccpvtz )
+        str += " spherical";
+
+      str += "\n";
+
+      str += "  * library " + getBasisType(t) + '\n';
+      str += "end\n\n";
+      return str;
+  }
+
+  QString NWChemInputDialog::printTheory(theoryType t ) {
+      QString str;
+      switch (t)
+        {
+        case PBE0:
+         str += "dft\n "+getOpenShell(m_openShell)+" xc pbe0\n  mulliken\n  maxiter "+QString::number(nmaxiter)+"\n  mult " + QString::number(m_multiplicity) + "\nend\n\n";
+        break;
+        case M062X:
+        str +="dft\n "+getOpenShell(m_openShell)+" xc m062x\n  mulliken\n  maxiter "+QString::number(nmaxiter)+"\n  mult " + QString::number(m_multiplicity )+ "\nend\n\n";
+        break;
+        case B3LYP:
+          str += "dft\n "+getOpenShell(m_openShell)+" xc b3lyp\n  mulliken\n  maxiter "+QString::number(nmaxiter)+"\n  mult " + QString::number(m_multiplicity) + "\nend\n\n";
+          break;
+        case MP2:
+          str += "mp2\n";
+          str += "  # Exclude core electrons from MP2 treatment\n";
+          str += "  freeze atomic\n";
+          str += "end\n\n";
+          break;
+        case CCSD:
+          str += "ccsd\n";
+          str += "  # Exclude core electrons from CCSD treatment\n";
+          str += "  freeze atomic\n";
+          str += "end\n\n";
+          break;
+        default:
+        case RHF:
+            break;
+        }
+    return str;
+  }
+
+  QString NWChemInputDialog::printTask(theoryType t) {
+    QString str = "task ";
+    switch (t) {
+      case PBE0:
+        str += "dft ";
+        break;
+      case M062X:
+        str += "dft ";
+        break;
+      case B3LYP:
+        str += "dft ";
+        break;
+      case CCSD:
+        str += "ccsd ";
+        break;
+      case MP2:
+        str += "mp2 ";
+        break;
+      default:
+      case RHF:
+        str += "scf ";
+        break;
+    }
+    return str;
+  }
+
   QString NWChemInputDialog::generateInputDeck()
   {
     // Generate an input deck based on the settings of the dialog
@@ -474,22 +572,22 @@ namespace Avogadro
     mol << "######################################################\n";
 
     // Print input in output
-    mol << "echo\n\n";
+    mol << "echo\n";
 
     // Job - CTC
     if (!m_rtRestart)
-        mol << "start "<< m_job <<" \n\n";
+        mol << "start "<< m_job <<" \n";
     else
-        mol << "restart "<< m_job <<" \n\n";
+        mol << "restart "<< m_job <<" \n";
 
     // Title
-    mol << "title \"" << m_title << "\"\n\n";
+    mol << "title \"" << m_title << "\"\n";
+
+    // Ecce file
+    mol << "ecce_print "<< m_job <<"_ecce.out \n";
 
     // Now for the charge
     mol << "charge " << m_charge << "\n\n";
-
-    // Ecce file
-    mol << "ecce_print "<< m_job <<"_ecce.out \n\n";
 
     // Geometry specification
     if (!m_rtRestart) {
@@ -644,89 +742,51 @@ namespace Avogadro
     //Set geometry
     mol << "set geometry \""<<m_job<<"\" \n\n";
 
-    // Basis set
-    mol << "basis";
+    /*****************
+     * Basis
+     * ***************/
+    mol << printBasisDeck(m_basisType);
 
-    // Need spherical keyword if using Dunning correlation consistent basis sets
-    if ( m_basisType == ccpvdz || m_basisType == ccpvtz || m_basisType == augccpvdz || m_basisType == augccpvtz )
-      mol << " spherical";
+    /*****************
+     * Driver
+     *****************/
+    if (m_calculationType == OPT) {
+    mol << "driver\n  maxiter  "<< m_nmaxitergeom <<"\n";
+        if (ui.checkBox_xyz->isChecked() ) {
+            mol << "  xyz\n";
+        }
+        mol<<"end\n\n" ;
+    }
 
-    mol << endl;
+    /*****************
+     * Theory
+     * ***************/
+    mol << printTheory(m_theoryType);
 
-    mol << "  * library " << getBasisType(m_basisType) << '\n';
-    mol << "end\n\n";
-
-    // theory directives (multiplicity, too)
-    switch (m_theoryType)
-      {
-      case PBE0:
-       mol << "dft\n "<<getOpenShell(m_openShell)<<" xc pbe0\n  mulliken\n  maxiter "<<nmaxiter<<"\n  mult " << m_multiplicity << "\nend\n\n";
-      break;
-      case M062X:
-      mol << "dft\n "<<getOpenShell(m_openShell)<<" xc m062x\n  mulliken\n  maxiter "<<nmaxiter<<"\n  mult " << m_multiplicity << "\nend\n\n";
-      break;
-      case B3LYP:
-        mol << "dft\n "<<getOpenShell(m_openShell)<<" xc b3lyp\n  mulliken\n  maxiter "<<nmaxiter<<"\n  mult " << m_multiplicity << "\nend\n\n";
-        break;
-      case MP2:
-        mol << "mp2\n";
-        mol << "  # Exclude core electrons from MP2 treatment\n";
-        mol << "  freeze atomic\n";
-        mol << "end\n\n";
-        break;
-      case CCSD:
-        mol << "ccsd\n";
-        mol << "  # Exclude core electrons from CCSD treatment\n";
-        mol << "  freeze atomic\n";
-        mol << "end\n\n";
-        break;
-      default:
-      case RHF:
-          break;
-      }
-
-    // Task directive
+    /*****************
+     * Task
+     * ***************/
     mol << "task ";
-
-    // Set theory level:
-    switch (m_theoryType)
-      {
-      case PBE0:
-        mol << "dft ";
-      break;
-      case M062X:
-      mol << "dft ";
-      break;
-      case B3LYP:
-        mol << "dft ";
-        break;
-      case CCSD:
-        mol << "ccsd ";
-        break;
-      case MP2:
-        mol << "mp2 ";
-        break;
-      default:
-      case RHF:
-        mol << "scf ";
-        break;
-      }
-
+    mol << printTask(m_theoryType) ;
     mol << getCalculationType(m_calculationType) <<"\n\n"<< endl;
+
     } //end if not restart
+
     /**************************************************************************/
-    /**************************************************************************/
-    // Add second and third optimizations if needed
-    /**************************************************************************/
+    // Second Calculation
     /**************************************************************************/
 
     //Create DFT block
     if (ui.checkBox_opt2->isChecked() ) {
-
         ui.checkBox_opt3->setEnabled(true);
-        mol << "##########################\n";
-        mol << "# Additional Calculation \n";
-        mol << "##########################\n"<<endl;
+        mol << "###############################\n";
+        if (m_calculationType2 == OPT)
+          mol << "# Additional Optimization \n";
+        else if (m_calculationType2 == SP)
+          mol << "# Additional Single Point \n";
+        else if (m_calculationType2 == FREQ)
+          mol << "# Additional Frequency \n";
+        mol << "###############################\n"<<endl;
 
         if (m_calculationType2 == OPT) {
         mol << "driver\n  maxiter  "<< nmaxiter2 <<"\n";
@@ -736,155 +796,46 @@ namespace Avogadro
             mol<<"end\n\n" ;
         }
 
-        switch (m_tt2)
-          {
-          case PBE0:
-            mol << "dft\n "<<getOpenShell(m_openShell)<<" disp vdw 3\n  xc pbe0\n  mulliken\n  mult " << m_multiplicity << "\nend\n\n";
-            break;
-          case M062X:
-            mol << "dft\n "<<getOpenShell(m_openShell)<<" disp vdw 3\n  xc m062x\n  mulliken\n  mult " << m_multiplicity << "\nend\n\n";
-            break;
-          case B3LYP:
-            mol << "dft\n "<<getOpenShell(m_openShell)<<" disp vdw 3\n  xc b3lyp\n  mulliken\n  mult " << m_multiplicity << "\nend\n\n";
-            break;
-          case MP2:
-            mol << "mp2\n";
-            mol << "  # Exclude core electrons from MP2 treatment\n";
-            mol << "  freeze atomic\n";
-            mol << "end\n\n";
-            break;
-          case CCSD:
-            mol << "ccsd\n";
-            mol << "  # Exclude core electrons from CCSD treatment\n";
-            mol << "  freeze atomic\n";
-            mol << "end\n\n";
-            break;
-          default:
-          case RHF:
-              break;
-          }
+        mol << printTheory(m_tt2);
 
-        // Create basis directive
-        //if (m_calculationType2 == SP || m_calculationType2 == OPT  ) {
-            mol << "basis";
-            // Need spherical keyword if using Dunning correlation consistent basis sets
-            if ( m_basisType2 == ccpvdz || m_basisType2 == ccpvtz || m_basisType2 == augccpvdz || m_basisType2 == augccpvtz )
-            mol << " spherical";
 
-            mol << endl;
-
-            mol << "  * library " << getBasisType(m_basisType2) << '\n';
-            mol << "end\n\n";
-
-            // Create Task directive
-            mol << "task ";
-
-            // Set theory level:
-            switch (m_tt2)
-            {
-            case PBE0:
-                mol << "dft ";
-                break;
-            case M062X:
-                mol << "dft ";
-                break;
-            case B3LYP:
-                mol << "dft ";
-                break;
-            case CCSD:
-                mol << "ccsd ";
-                break;
-            case MP2:
-                mol << "mp2 ";
-                break;
-            default:
-                mol << "dft ";
-                break;
-            }
-        //}
+        /********************
+         * Print Basis library
+         */
+          // Need spherical keyword if using Dunning correlation consistent basis sets
+        mol << printBasisDeck(m_basisType2);
+        mol << printTask(m_tt2);
         mol << getCalculationType(m_calculationType2) <<"\n"<<endl;
     }
 
+    /**************************************************************************/
+    // Third Calculation
+    /**************************************************************************/
     if (ui.checkBox_opt3->isChecked() ) {
-        mol << "##########################\n";
-        mol << "# Additional Calculation \n";
-        mol << "##########################\n"<<endl;
+      mol << "###############################\n";
+      if (m_calculationType3 == OPT)
+        mol << "# Additional Optimization \n";
+      else if (m_calculationType3 == SP)
+        mol << "# Additional Single Point \n";
+      else if (m_calculationType3 == FREQ)
+        mol << "# Additional Frequency \n";
+      mol << "###############################\n"<<endl;
 
-        if (m_calculationType3 == OPT) {
+      if (m_calculationType3 == OPT) {
         mol << "driver\n  maxiter  "<< nmaxiter3 <<"\n";
-            if (ui.checkBox_xyz3->isChecked() ) {
-                mol << "  xyz\n";
-            }
-            mol<<"end\n\n" ;
+        if (ui.checkBox_xyz3->isChecked() ) {
+          mol << "  xyz\n";
         }
+        mol<<"end\n\n" ;
+      }
+      mol << printTheory(m_tt3);
 
-        switch (m_tt3)
-          {
-          case PBE0:
-            mol << "dft\n "<<getOpenShell(m_openShell)<<" disp vdw 3\n  xc pbe0\n  mulliken\n  mult " << m_multiplicity << "\nend\n\n";
-            break;
-          case M062X:
-            mol << "dft\n "<<getOpenShell(m_openShell)<<" disp vdw 3\n  xc m062x\n  mulliken\n  mult " << m_multiplicity << "\nend\n\n";
-            break;
-          case B3LYP:
-            mol << "dft\n "<<getOpenShell(m_openShell)<<" disp vdw 3\n  xc b3lyp\n  mulliken\n  mult " << m_multiplicity << "\nend\n\n";
-            break;
-          case MP2:
-            mol << "mp2\n";
-            mol << "  # Exclude core electrons from MP2 treatment\n";
-            mol << "  freeze atomic\n";
-            mol << "end\n\n";
-            break;
-          case CCSD:
-            mol << "ccsd\n";
-            mol << "  # Exclude core electrons from CCSD treatment\n";
-            mol << "  freeze atomic\n";
-            mol << "end\n\n";
-            break;
-          default:
-          case RHF:
-              break;
-          }
-
-        // Create basis directive
-        //if (m_calculationType2 == SP || m_calculationType2 == OPT  ) {
-            mol << "basis";
-            // Need spherical keyword if using Dunning correlation consistent basis sets
-            if ( m_basisType3 == ccpvdz || m_basisType3 == ccpvtz || m_basisType3 == augccpvdz || m_basisType3 == augccpvtz )
-            mol << " spherical";
-
-            mol << endl;
-
-            mol << "  * library " << getBasisType(m_basisType3) << '\n';
-            mol << "end\n\n";
-
-            // Create Task directive
-            mol << "task ";
-
-            // Set theory level:
-            switch (m_tt3)
-            {
-            case PBE0:
-                mol << "dft ";
-                break;
-            case M062X:
-                mol << "dft ";
-                break;
-            case B3LYP:
-                mol << "dft ";
-                break;
-            case CCSD:
-                mol << "ccsd ";
-                break;
-            case MP2:
-                mol << "mp2 ";
-                break;
-            default:
-                mol << "dft ";
-                break;
-            }
-        //}
-        mol << getCalculationType(m_calculationType3) <<"\n"<<endl;
+      /********************
+       * Print Basis library
+       */
+      mol << printBasisDeck(m_basisType3);
+      mol << printTask(m_tt3);
+      mol << getCalculationType(m_calculationType3) <<"\n"<<endl;
 
     }
 
@@ -996,9 +947,10 @@ namespace Avogadro
 
       if (rtVis) {
           str += "  visualization\n";
-          str += "    tstart "+QString::number(ui.doubleSpinBox_startVis->value())+"\n";
-          str += "    tend "+QString::number(ui.doubleSpinBox_endVis->value())+"\n";
-          str += "    treference "+QString::number(ui.doubleSpinBox_refVis->value())+"\n";
+          str += "    tstart "+QString::number(convertUnits(0,1,ui.doubleSpinBox_startVis->value()))+"\n";
+          str += "    tend "+QString::number(convertUnits(0,1,ui.doubleSpinBox_endVis->value()))+"\n";
+          if (m_visRef)
+            str += "    treference "+QString::number(convertUnits(0,1,ui.doubleSpinBox_refVis->value()))+"\n";
           str += "    dplot\n";
           str += "  end\n";
       }
@@ -1139,6 +1091,8 @@ namespace Avogadro
         return "6-31+g*";
       case B6311g:
         return "6-311g";
+      case B6311gp:
+        return "6-311g*";
       case ccpvdz:
         return "cc-pvdz";
       case ccpvtz:
