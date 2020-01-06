@@ -46,7 +46,7 @@ namespace Avogadro
     m_output(), m_coordType(CARTESIAN), m_dirty(false), m_warned(false),nmaxiter(50),nmaxiter2(50),nmaxiter3(50),
     ntddftiter(1000),nroots(1),m_plotspin(total),m_openShell(false),m_ffreq(1.0),m_fcenter(5.0),m_fwidth(5.0),rtVis(false),
     m_rt(false),m_tmax(25.),m_dt(1.),m_rtRestart(false),m_cis(false),m_visRef(false),m_vend(25.0),m_vstart(0.),
-    m_calculationType2(OPT),m_calculationType3(OPT),m_nmaxitergeom(50)
+    m_calculationType2(OPT),m_calculationType3(OPT),m_nmaxitergeom(50),m_direct(true),m_semidirect(false),m_noio(false)
   {
     ui.setupUi(this);
 
@@ -163,6 +163,12 @@ namespace Avogadro
           this, SLOT(opt2Changed(double)));
     connect(ui.spinBox_geomIter, SIGNAL(valueChanged(int)),
           this, SLOT(maxitergeomChanged(int)));
+    connect(ui.checkBox_direct, SIGNAL(toggled(bool)),
+          this, SLOT(setDirect(bool)));
+    connect(ui.checkBox_semidirect, SIGNAL(toggled(bool)),
+          this, SLOT(setSemidirect(bool)));
+    connect(ui.checkBox_noio, SIGNAL(toggled(bool)),
+          this, SLOT(setNoio(bool)));
 
 
     QSettings settings;
@@ -171,6 +177,26 @@ namespace Avogadro
     // Generate an initial preview of the input deck
     setJob();
     updatePreviewText();
+  }
+
+//  void NWChemInputDialog::set(bool n) {
+//    m_ = n;
+//    updatePreviewText();
+//  }
+
+  void NWChemInputDialog::setDirect(bool n) {
+      m_direct = n;
+ //     if (m_direct)
+ //       ui.checkBox_semidirect->setChecked(false);
+      updatePreviewText();
+  }
+  void NWChemInputDialog::setSemidirect(bool n) {
+      m_semidirect = n;
+      updatePreviewText();
+  }
+  void NWChemInputDialog::setNoio(bool n) {
+      m_noio = n;
+      updatePreviewText();
   }
 
   void NWChemInputDialog::setVisRef(bool n) {
@@ -502,18 +528,36 @@ namespace Avogadro
       return str;
   }
 
+  QString NWChemInputDialog::getIo() {
+    QString str;
+    if (m_direct)
+      str += "  direct\n";
+    if (m_noio)
+      str += "  noio\n";
+    if (m_semidirect)
+      str += "  semidirect\n";
+
+    return str;
+  }
+
   QString NWChemInputDialog::printTheory(theoryType t ) {
       QString str;
       switch (t)
         {
         case PBE0:
-         str += "dft\n "+getOpenShell(m_openShell)+" xc pbe0\n  mulliken\n  maxiter "+QString::number(nmaxiter)+"\n  mult " + QString::number(m_multiplicity) + "\nend\n\n";
+         str += "dft\n ";
+         str += getIo();
+         str += getOpenShell(m_openShell)+" xc pbe0\n  mulliken\n  maxiter "+QString::number(nmaxiter)+"\n  mult " + QString::number(m_multiplicity) + "\nend\n\n";
         break;
         case M062X:
-        str +="dft\n "+getOpenShell(m_openShell)+" xc m062x\n  mulliken\n  maxiter "+QString::number(nmaxiter)+"\n  mult " + QString::number(m_multiplicity )+ "\nend\n\n";
+        str += "dft\n ";
+        str += getIo();
+        str += getOpenShell(m_openShell)+" xc pbe0\n  mulliken\n  maxiter "+QString::number(nmaxiter)+"\n  mult " + QString::number(m_multiplicity) + "\nend\n\n";
         break;
         case B3LYP:
-          str += "dft\n "+getOpenShell(m_openShell)+" xc b3lyp\n  mulliken\n  maxiter "+QString::number(nmaxiter)+"\n  mult " + QString::number(m_multiplicity) + "\nend\n\n";
+        str += "dft\n ";
+        str += getIo();
+        str += getOpenShell(m_openShell)+" xc pbe0\n  mulliken\n  maxiter "+QString::number(nmaxiter)+"\n  mult " + QString::number(m_multiplicity) + "\nend\n\n";
           break;
         case MP2:
           str += "mp2\n";
@@ -830,7 +874,7 @@ namespace Avogadro
       mol << printTheory(m_tt3);
 
       /********************
-       * Print Basis library
+       * Print Basis
        */
       mol << printBasisDeck(m_basisType3);
       mol << printTask(m_tt3);

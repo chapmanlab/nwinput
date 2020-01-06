@@ -57,6 +57,7 @@ namespace Avogadro
     QString printDplotTransden(QString str, int i);
     QString printRttddft();
     QString m_geomFileName;
+    QString getIo();
 
 
     double convertUnits(int,int,double);
@@ -90,6 +91,7 @@ namespace Avogadro
     bool m_dirty;
     bool m_warned;
     bool m_openShell;
+    bool m_direct,m_semidirect,m_noio;
     int optiter,optiter2,optiter3;
     int nmaxiter,nmaxiter2,nmaxiter3,m_nmaxitergeom;
     int nroots,ntddftiter;
@@ -159,6 +161,9 @@ namespace Avogadro
     void setRestart(bool);
     void setCis(bool);
     void setVisRef(bool);
+    void setDirect(bool);
+    void setSemidirect(bool);
+    void setNoio(bool);
   };
 }
 
