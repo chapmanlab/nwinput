@@ -514,7 +514,7 @@ namespace Avogadro
   }
   QString NWChemInputDialog::getOpenShell(bool n) {
       if (n)
-          return " odft\n ";
+          return "  odft\n";
       else
           return "";
   }
@@ -553,19 +553,19 @@ namespace Avogadro
       switch (t)
         {
         case PBE0:
-         str += "dft\n ";
+         str += "dft\n";
          str += getIo();
-         str += getOpenShell(m_openShell)+" xc pbe0\n  mulliken\n  maxiter "+QString::number(nmaxiter)+"\n  mult " + QString::number(m_multiplicity) + "\nend\n\n";
+         str += getOpenShell(m_openShell)+"  xc pbe0\n  mulliken\n  maxiter "+QString::number(nmaxiter)+"\n  mult " + QString::number(m_multiplicity) + "\nend\n\n";
         break;
         case M062X:
-        str += "dft\n ";
+        str += "dft\n";
         str += getIo();
-        str += getOpenShell(m_openShell)+" xc pbe0\n  mulliken\n  maxiter "+QString::number(nmaxiter)+"\n  mult " + QString::number(m_multiplicity) + "\nend\n\n";
+        str += getOpenShell(m_openShell)+"  xc pbe0\n  mulliken\n  maxiter "+QString::number(nmaxiter)+"\n  mult " + QString::number(m_multiplicity) + "\nend\n\n";
         break;
         case B3LYP:
-        str += "dft\n ";
+        str += "dft\n";
         str += getIo();
-        str += getOpenShell(m_openShell)+" xc pbe0\n  mulliken\n  maxiter "+QString::number(nmaxiter)+"\n  mult " + QString::number(m_multiplicity) + "\nend\n\n";
+        str += getOpenShell(m_openShell)+"  xc pbe0\n  mulliken\n  maxiter "+QString::number(nmaxiter)+"\n  mult " + QString::number(m_multiplicity) + "\nend\n\n";
           break;
         case MP2:
           str += "mp2\n";
