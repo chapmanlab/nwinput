@@ -82,7 +82,7 @@ namespace Avogadro
     polarizationType m_polarization;
     double m_tmax, m_dt, m_fcenter, m_fmax, m_fwidth, m_ffreq;
     double m_vstart, m_vend, m_vref;
-    bool rtVis,m_rt,m_rtRestart,m_cis,m_visRef;
+    bool rtVis,m_rt,m_rtRestart,m_cis,m_visRef,m_restartMain;
     //int m_multiplicity;
     //int m_charge;
     QString m_output;
@@ -164,6 +164,7 @@ namespace Avogadro
     void setDirect(bool);
     void setSemidirect(bool);
     void setNoio(bool);
+    void setRestartMain(bool);
   };
 }
 

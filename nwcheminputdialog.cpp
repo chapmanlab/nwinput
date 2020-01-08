@@ -46,7 +46,8 @@ namespace Avogadro
     m_output(), m_coordType(CARTESIAN), m_dirty(false), m_warned(false),nmaxiter(50),nmaxiter2(50),nmaxiter3(50),
     ntddftiter(1000),nroots(1),m_plotspin(total),m_openShell(false),m_ffreq(1.0),m_fcenter(5.0),m_fwidth(5.0),rtVis(false),
     m_rt(false),m_tmax(25.),m_dt(1.),m_rtRestart(false),m_cis(false),m_visRef(false),m_vend(25.0),m_vstart(0.),
-    m_calculationType2(OPT),m_calculationType3(OPT),m_nmaxitergeom(50),m_direct(true),m_semidirect(false),m_noio(false)
+    m_calculationType2(OPT),m_calculationType3(OPT),m_nmaxitergeom(50),m_direct(true),m_semidirect(false),m_noio(false),
+    m_restartMain(false)
   {
     ui.setupUi(this);
 
@@ -169,6 +170,8 @@ namespace Avogadro
           this, SLOT(setSemidirect(bool)));
     connect(ui.checkBox_noio, SIGNAL(toggled(bool)),
           this, SLOT(setNoio(bool)));
+    connect(ui.checkBox_restartMain, SIGNAL(toggled(bool)),
+          this, SLOT(setRestartMain(bool)));
 
 
     QSettings settings;
@@ -183,6 +186,11 @@ namespace Avogadro
 //    m_ = n;
 //    updatePreviewText();
 //  }
+
+  void NWChemInputDialog::setRestartMain(bool n) {
+    m_restartMain = n;
+    updatePreviewText();
+  }
 
   void NWChemInputDialog::setDirect(bool n) {
       m_direct = n;
@@ -619,10 +627,11 @@ namespace Avogadro
     mol << "echo\n";
 
     // Job - CTC
-    if (!m_rtRestart)
-        mol << "start "<< m_job <<" \n";
-    else
-        mol << "restart "<< m_job <<" \n";
+    if (m_rtRestart || m_restartMain) {
+      mol << "restart "<< m_job <<" \n";
+    } else {
+      mol << "start "<< m_job <<" \n";
+    }
 
     // Title
     mol << "title \"" << m_title << "\"\n";
@@ -634,7 +643,7 @@ namespace Avogadro
     mol << "charge " << m_charge << "\n\n";
 
     // Geometry specification
-    if (!m_rtRestart) {
+    if (!m_rtRestart && !m_restartMain) {
     mol << "geometry \""<<m_job<< "\" units angstroms print";
 
     // Now to output the actual molecular coordinates
@@ -814,6 +823,13 @@ namespace Avogadro
     mol << getCalculationType(m_calculationType) <<"\n\n"<< endl;
 
     } //end if not restart
+
+    if (m_restartMain) {
+      /*****************
+       * Basis
+       * ***************/
+      mol << printBasisDeck(m_basisType);
+    }
 
     /**************************************************************************/
     // Second Calculation
