@@ -237,11 +237,11 @@ namespace Avogadro
       updatePreviewText();
   }
   void NWChemInputDialog::setField(int n) {
-      m_field = n;
+      m_field = (NWChemInputDialog::fieldType) n;
       updatePreviewText();
   }
   void NWChemInputDialog::setPolarization(int n) {
-      m_polarization = n;
+      m_polarization = (NWChemInputDialog::polarizationType) n;
       updatePreviewText();
   }
   void NWChemInputDialog::setOpenShell(bool n) {
