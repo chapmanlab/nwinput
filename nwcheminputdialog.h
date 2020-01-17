@@ -53,6 +53,7 @@ namespace Avogadro
     enum polarizationType{X,Y,Z};
 
     QString printDplotMos(QString str, int i);
+    QString printDplotDens(QString str);
     QString printDplotRt();
     QString printDplotTransden(QString str, int i);
     QString printRttddft();
@@ -83,6 +84,7 @@ namespace Avogadro
     double m_tmax, m_dt, m_fcenter, m_fmax, m_fwidth, m_ffreq;
     double m_vstart, m_vend, m_vref;
     bool rtVis,m_rt,m_rtRestart,m_cis,m_visRef,m_restartMain;
+    bool m_dplotdens;
     //int m_multiplicity;
     //int m_charge;
     QString m_output;
@@ -160,6 +162,7 @@ namespace Avogadro
     void setrtVis(bool);
     void setRestart(bool);
     void setCis(bool);
+    void setDplotdens(bool);
     void setVisRef(bool);
     void setDirect(bool);
     void setSemidirect(bool);

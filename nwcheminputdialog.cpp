@@ -47,7 +47,7 @@ namespace Avogadro
     ntddftiter(1000),nroots(1),m_plotspin(total),m_openShell(false),m_ffreq(1.0),m_fcenter(5.0),m_fwidth(5.0),rtVis(false),
     m_rt(false),m_tmax(25.),m_dt(1.),m_rtRestart(false),m_cis(false),m_visRef(false),m_vend(25.0),m_vstart(0.),
     m_calculationType2(OPT),m_calculationType3(OPT),m_nmaxitergeom(50),m_direct(true),m_semidirect(false),m_noio(false),
-    m_restartMain(false)
+    m_restartMain(false),m_dplotdens(false)
   {
     ui.setupUi(this);
 
@@ -172,6 +172,8 @@ namespace Avogadro
           this, SLOT(setNoio(bool)));
     connect(ui.checkBox_restartMain, SIGNAL(toggled(bool)),
           this, SLOT(setRestartMain(bool)));
+    connect(ui.checkBox_density, SIGNAL(toggled(bool)),
+           this, SLOT(setDplotdens(bool)));
 
 
     QSettings settings;
@@ -209,6 +211,10 @@ namespace Avogadro
 
   void NWChemInputDialog::setVisRef(bool n) {
     m_visRef = n;
+    updatePreviewText();
+  }
+  void NWChemInputDialog::setDplotdens(bool n) {
+    m_dplotdens = n;
     updatePreviewText();
   }
 
@@ -927,6 +933,11 @@ namespace Avogadro
             mol << printDplotMos(cubeName, moindex);
         }
     }
+    if (ui.checkBox_density->isChecked() ) {
+        QString cubeName = m_job+"-density.cube" ;
+        mol << printDplotDens(cubeName);
+    }
+
     if (ui.checkBox_transden->isChecked()) {
         int ntransden = ui.spinBox_nroots->value();
         for (int i=0; i<ntransden; i++) {
@@ -1047,6 +1058,21 @@ namespace Avogadro
       str += "  -"+QString::number(ui.spinBox_cubemm3->value())+" "+QString::number(ui.spinBox_cubemm3->value())+" "+QString::number(ui.spinBox_cubep3->value())+"\n";
       str += " gaussian\n spin "+ getSpinType(m_plotspin ) +"\n vectors "+m_job+".movecs\n";
       str += " orbitals view; 1; "+QString::number(i)+"\n";
+      str += " output "+str1+"\nend\n";
+      str += "task dplot\n\n";
+
+      return str;
+  }
+  QString NWChemInputDialog::printDplotDens(QString str1) {
+      QString str;
+      str += "##########################\n";
+      str +="# DPLOT\n";
+      str += "##########################\n";
+      str += "dplot\n" ;
+      str += " limitxyz\n  -"+QString::number(ui.spinBox_cubemm1->value())+" "+QString::number(ui.spinBox_cubemm1->value()) +" "+QString::number(ui.spinBox_cubep1->value())+"\n";
+      str += "  -"+QString::number(ui.spinBox_cubemm2->value())+" "+QString::number(ui.spinBox_cubemm2->value())+" "+QString::number(ui.spinBox_cubep2->value())+"\n";
+      str += "  -"+QString::number(ui.spinBox_cubemm3->value())+" "+QString::number(ui.spinBox_cubemm3->value())+" "+QString::number(ui.spinBox_cubep3->value())+"\n";
+      str += " gaussian\n spin "+ getSpinType(m_plotspin ) +"\n vectors "+m_job+".movecs\n";
       str += " output "+str1+"\nend\n";
       str += "task dplot\n\n";
 
