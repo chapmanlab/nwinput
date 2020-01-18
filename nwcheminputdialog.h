@@ -47,6 +47,7 @@ namespace Avogadro
     enum calculationType{SP, OPT, FREQ};
     enum theoryType{RHF, B3LYP, MP2, CCSD, PBE0, M062X};
     enum basisType{STO3G, B321g, B631g, B631gp, B631plusgp, B6311g, B6311gp, ccpvdz, ccpvtz, augccpvdz, augccpvtz, LANL2DZ};
+    enum ecpType{LANL2DZ_ECP,CRENBL,CRENBS,STUTTGARTRLC,STUTTGARTRSC,SBKJCVDZ};
     enum coordType{CARTESIAN, ZMATRIX, ZMATRIX_COMPACT};
     enum spinType{total, alpha, beta, spindens};
     enum fieldType{KICK, GAUSSIAN};
@@ -78,13 +79,13 @@ namespace Avogadro
     calculationType m_calculationType,m_calc2,m_calc3,m_calc4,m_calc5,m_calculationType2,m_calculationType3;
     theoryType m_theoryType,m_tt2,m_tt3,m_tt4;
     basisType m_basisType,m_basisType2,m_basisType3;
-    spinType m_plotspin;
+    spinType m_plotspin,m_plotrtspin;
     fieldType m_field;
     polarizationType m_polarization;
     double m_tmax, m_dt, m_fcenter, m_fmax, m_fwidth, m_ffreq;
     double m_vstart, m_vend, m_vref;
     bool rtVis,m_rt,m_rtRestart,m_cis,m_visRef,m_restartMain;
-    bool m_dplotdens;
+    bool m_dplotdens,m_ecp;
     //int m_multiplicity;
     //int m_charge;
     QString m_output;
@@ -97,6 +98,7 @@ namespace Avogadro
     int optiter,optiter2,optiter3;
     int nmaxiter,nmaxiter2,nmaxiter3,m_nmaxitergeom;
     int nroots,ntddftiter;
+    int m_dplotx,m_dploty,m_dplotz,m_dplotpx,m_dplotpy,m_dplotpz;
 
     // Generate an input deck as a string
     QString generateInputDeck();
@@ -111,6 +113,9 @@ namespace Avogadro
     QString printBasisDeck(basisType t);
     QString printTheory(theoryType t );
     QString printTask(theoryType);
+    QString getEcpType(ecpType);
+    QStringList getEcpAtoms();
+    int getNEcpAtoms(QString);
 
     // Enable/disable form elements
     void deckDirty(bool);
@@ -147,6 +152,7 @@ namespace Avogadro
     void setCoords(int);
     void opt2Changed(int);
     void opt2Changed(double);
+    void opt2Changed(QString);
     void geomSourceChanged(bool);
     void geomSourceChanged1(bool);
     void maxiter3Changed(int);
@@ -156,6 +162,8 @@ namespace Avogadro
     void tddftiterChanged(int);
     void nrootsChanged(int);
     void setSpin(int);
+    void setRtSpin(int);
+    void cube2Changed(int);
     void setField(int);
     void setPolarization(int);
     void setRttddft(bool);
@@ -168,6 +176,7 @@ namespace Avogadro
     void setSemidirect(bool);
     void setNoio(bool);
     void setRestartMain(bool);
+    void setEcp(bool);
   };
 }
 

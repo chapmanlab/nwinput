@@ -47,7 +47,7 @@ namespace Avogadro
     ntddftiter(1000),nroots(1),m_plotspin(total),m_openShell(false),m_ffreq(1.0),m_fcenter(5.0),m_fwidth(5.0),rtVis(false),
     m_rt(false),m_tmax(25.),m_dt(1.),m_rtRestart(false),m_cis(false),m_visRef(false),m_vend(25.0),m_vstart(0.),
     m_calculationType2(OPT),m_calculationType3(OPT),m_nmaxitergeom(50),m_direct(true),m_semidirect(false),m_noio(false),
-    m_restartMain(false),m_dplotdens(false)
+    m_restartMain(false),m_dplotdens(false),m_ecp(false)
   {
     ui.setupUi(this);
 
@@ -76,6 +76,8 @@ namespace Avogadro
         this, SLOT(setBasis3(int)));
     connect(ui.comboBox_spin, SIGNAL(currentIndexChanged(int)),
         this, SLOT(setSpin(int)));
+    connect(ui.comboBox_rtspin, SIGNAL(currentIndexChanged(int)),
+        this, SLOT(setRtSpin(int)));
     connect(ui.comboBox_field, SIGNAL(currentIndexChanged(int)),
         this, SLOT(setField(int)));
     connect(ui.comboBox_polarization, SIGNAL(currentIndexChanged(int)),
@@ -122,6 +124,8 @@ namespace Avogadro
          this, SLOT(tddftiterChanged(int)));
     connect(ui.spinBox_nroots, SIGNAL(valueChanged(int)),
          this, SLOT(nrootsChanged(int)));
+    connect(ui.spinBox_dplotnstates, SIGNAL(valueChanged(int)),
+         this, SLOT(opt2Changed(int)));
     connect(ui.checkBox_tddftsinglet, SIGNAL(stateChanged(int)),
          this, SLOT(opt2Changed(int)));
     connect(ui.checkBox_tddfttriplet, SIGNAL(stateChanged(int)),
@@ -174,6 +178,28 @@ namespace Avogadro
           this, SLOT(setRestartMain(bool)));
     connect(ui.checkBox_density, SIGNAL(toggled(bool)),
            this, SLOT(setDplotdens(bool)));
+    connect(ui.checkBox_ecp, SIGNAL(toggled(bool)),
+           this, SLOT(setEcp(bool)));
+    connect(ui.lineEdit_ecp, SIGNAL(textEdited(QString)),
+           this, SLOT(opt2Changed(QString)));
+    connect(ui.comboBox_ecp, SIGNAL(currentIndexChanged(int)),
+           this, SLOT(opt2Changed(int)));
+    connect(ui.spinBox_cubemm1_2 ,SIGNAL(valueChanged(int)),
+           this, SLOT(cube2Changed(int)));
+    connect(ui.spinBox_cubemm2_2 ,SIGNAL(valueChanged(int)),
+           this, SLOT(cube2Changed(int)));
+    connect(ui.spinBox_cubemm3_2 ,SIGNAL(valueChanged(int)),
+           this, SLOT(cube2Changed(int)));
+    connect(ui.spinBox_cubep1_2 ,SIGNAL(valueChanged(int)),
+           this, SLOT(cube2Changed(int)));
+    connect(ui.spinBox_cubep2_2 ,SIGNAL(valueChanged(int)),
+           this, SLOT(cube2Changed(int)));
+    connect(ui.spinBox_cubep3_2 ,SIGNAL(valueChanged(int)),
+           this, SLOT(cube2Changed(int)));
+//    connect(ui.spinBox ,SIGNAL(),
+//           this, SLOT(opt2Changed(int)));
+
+
 
 
     QSettings settings;
@@ -188,6 +214,27 @@ namespace Avogadro
 //    m_ = n;
 //    updatePreviewText();
 //  }
+    void NWChemInputDialog::cube2Changed(int) {
+      m_dplotx = ui.spinBox_cubemm1_2->value();
+      m_dploty= ui.spinBox_cubemm2_2->value();
+      m_dplotz= ui.spinBox_cubemm3_2->value();
+      m_dplotpx= ui.spinBox_cubep1_2->value();
+      m_dplotpy= ui.spinBox_cubep2_2->value();
+      m_dplotpz= ui.spinBox_cubep3_2->value();
+      updatePreviewText();
+    }
+
+    void NWChemInputDialog::setEcp(bool n) {
+      m_ecp = n;
+      if (n) {
+        ui.comboBox_ecp->setEnabled(true);
+        ui.lineEdit_ecp->setEnabled(true);
+      } else {
+        ui.comboBox_ecp->setEnabled(false);
+        ui.lineEdit_ecp->setEnabled(false);
+      }
+      updatePreviewText();
+    }
 
   void NWChemInputDialog::setRestartMain(bool n) {
     m_restartMain = n;
@@ -273,6 +320,10 @@ namespace Avogadro
      updatePreviewText();
   }
   void NWChemInputDialog::opt2Changed(int n)
+  {
+      updatePreviewText();
+  }
+  void NWChemInputDialog::opt2Changed(QString n)
   {
       updatePreviewText();
   }
@@ -471,6 +522,10 @@ namespace Avogadro
       m_plotspin = (NWChemInputDialog::spinType) n;
       updatePreviewText();
   }
+  void NWChemInputDialog::setRtSpin(int n) {
+      m_plotrtspin = (NWChemInputDialog::spinType) n;
+      updatePreviewText();
+  }
 
   void NWChemInputDialog::setBasis(int n)
   {
@@ -538,8 +593,66 @@ namespace Avogadro
       str += "\n";
 
       str += "  * library " + getBasisType(t) + '\n';
+      if (m_ecp) {
+        //get list of ecp atoms
+        //int necp = getNEcpAtoms(ui.lineEdit_ecp->text());
+        ecpType t1 = (NWChemInputDialog::ecpType) ui.comboBox_ecp->currentIndex();
+        QStringList strl = ui.lineEdit_ecp->text().split(",",QString::SkipEmptyParts);
+        for (int i=0; i<strl.count(); i++) {
+          str += "  "+strl.at(i)+" library "+getEcpType(t1) +"\n";
+        }
+      }
       str += "end\n\n";
+
+      if (m_ecp) {
+        ecpType t1 = (NWChemInputDialog::ecpType) ui.comboBox_ecp->currentIndex();
+        str += "ecp\n";
+        QStringList strl = ui.lineEdit_ecp->text().split(",",QString::SkipEmptyParts);
+        for (int i=0; i<strl.count(); i++) {
+          str += "  "+strl.at(i)+" library "+getEcpType(t1) +"\n";
+        }
+        str += "end\n\n";
+      }
       return str;
+  }
+
+
+
+  QStringList NWChemInputDialog::getEcpAtoms() {
+    return ui.lineEdit_ecp->text().split(",",QString::SkipEmptyParts);
+  }
+
+  int NWChemInputDialog::getNEcpAtoms(QString str) {
+    QStringList strl = str.split(",",QString::SkipEmptyParts);
+    int n = strl.count();
+    return n;
+  }
+
+  QString NWChemInputDialog::getEcpType(ecpType t) {
+    QString str;
+    switch (t) {
+      case LANL2DZ_ECP:
+        str += "lanl2dz_ecp";
+        break;
+      case CRENBL:
+        str += "crenbl_ecp";
+      break;
+      case CRENBS:
+        str += "crenbs_ecp";
+      break;
+      case STUTTGARTRLC:
+        str += "stuttgart_rlc_ecp";
+      break;
+      case STUTTGARTRSC:
+        str += "stuttgart_rsc_ecp";
+      break;
+      case SBKJCVDZ:
+        str += "sbkjc_vdz_ecp";
+      break;
+      default:
+        str += "lanl2dz_ecp";
+    }
+    return str;
   }
 
   QString NWChemInputDialog::getIo() {
@@ -939,7 +1052,7 @@ namespace Avogadro
     }
 
     if (ui.checkBox_transden->isChecked()) {
-        int ntransden = ui.spinBox_nroots->value();
+        int ntransden = ui.spinBox_dplotnstates->value();
         for (int i=0; i<ntransden; i++) {
             QString cubeName = m_job+"-tdens-"+QString::number(i+1)+".cube";
             mol << printDplotTransden(cubeName, i+1);
@@ -1039,10 +1152,10 @@ namespace Avogadro
       str +="# DPLOT for RT-TDDFT visualization\n";
       str += "####################################\n";
       str += "dplot\n" ;
-      str += " limitxyz\n  -"+QString::number(ui.spinBox_cubemm1->value())+" "+QString::number(ui.spinBox_cubemm1->value()) +" "+QString::number(ui.spinBox_cubep1->value())+"\n";
-      str += "  -"+QString::number(ui.spinBox_cubemm2->value())+" "+QString::number(ui.spinBox_cubemm2->value())+" "+QString::number(ui.spinBox_cubep2->value())+"\n";
-      str += "  -"+QString::number(ui.spinBox_cubemm3->value())+" "+QString::number(ui.spinBox_cubemm3->value())+" "+QString::number(ui.spinBox_cubep3->value())+"\n";
-      str += " gaussian\n spin "+ getSpinType(m_plotspin )+"\n";
+      str += " limitxyz\n  -"+QString::number(ui.spinBox_cubemm1_2->value())+" "+QString::number(ui.spinBox_cubemm1_2->value()) +" "+QString::number(ui.spinBox_cubep1_2->value())+"\n";
+      str += "  -"+QString::number(ui.spinBox_cubemm2_2->value())+" "+QString::number(ui.spinBox_cubemm2_2->value())+" "+QString::number(ui.spinBox_cubep2_2->value())+"\n";
+      str += "  -"+QString::number(ui.spinBox_cubemm3_2->value())+" "+QString::number(ui.spinBox_cubemm3_2->value())+" "+QString::number(ui.spinBox_cubep3_2->value())+"\n";
+      str += " gaussian\n spin "+ getSpinType(m_plotrtspin )+"\n";
       str += "end\n\n";
 
       return str;
