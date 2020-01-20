@@ -35,6 +35,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QDebug>
+#include <QFile>
 
 using namespace OpenBabel;
 
@@ -44,18 +45,21 @@ namespace Avogadro
     : InputDialog(parent, f), m_calculationType(OPT),
     m_theoryType(B3LYP), m_basisType(B321g),m_basisType2(B631g),m_basisType3(ccpvtz),m_tt2(PBE0),m_tt3(PBE0),
     m_output(), m_coordType(CARTESIAN), m_dirty(false), m_warned(false),nmaxiter(50),nmaxiter2(50),nmaxiter3(50),
-    ntddftiter(1000),nroots(1),m_plotspin(total),m_openShell(false),m_ffreq(1.0),m_fcenter(5.0),m_fwidth(5.0),rtVis(false),
+    ntddftiter(1000),nroots(5),m_plotspin(total),m_openShell(false),m_ffreq(1.0),m_fcenter(5.0),m_fwidth(5.0),rtVis(false),
     m_rt(false),m_tmax(25.),m_dt(1.),m_rtRestart(false),m_cis(false),m_visRef(false),m_vend(25.0),m_vstart(0.),
     m_calculationType2(OPT),m_calculationType3(OPT),m_nmaxitergeom(50),m_direct(true),m_semidirect(false),m_noio(false),
-    m_restartMain(false),m_dplotdens(false),m_ecp(false)
+    m_restartMain(false),m_dplotdens(false),m_ecp(false),m_job("molecule"),m_propall(false),m_propnbo(false),m_propesp(false),
+    m_propefield(false),m_propaim(false),m_propdipole(false),m_propquad(false),m_propoct(false),m_propdens(false),
+    m_propegrad(false),m_propraman(false),m_prop(false),m_dft(true),m_scf(false),m_mp2(false),m_ccsd(false)
   {
     ui.setupUi(this);
+    proc = new QProcess(this);
 
     // Connect the GUI elements to the correct slots
     connect(ui.titleLine, SIGNAL(editingFinished()),
         this, SLOT(setTitle()));
-    connect(ui.lineEdit_jobname, SIGNAL(editingFinished()),
-        this, SLOT(setJob()));
+    connect(ui.lineEdit_jobname, SIGNAL(textEdited(QString)),
+        this, SLOT(setJob(QString)));
     connect(ui.calculationCombo, SIGNAL(currentIndexChanged(int)),
         this, SLOT(setCalculation(int)));
     connect(ui.comboBox_calc2, SIGNAL(currentIndexChanged(int)),
@@ -196,11 +200,41 @@ namespace Avogadro
            this, SLOT(cube2Changed(int)));
     connect(ui.spinBox_cubep3_2 ,SIGNAL(valueChanged(int)),
            this, SLOT(cube2Changed(int)));
-//    connect(ui.spinBox ,SIGNAL(),
+    connect(ui.lineEdit_output, SIGNAL(textEdited(QString)),
+            this, SLOT(setJob(QString)));
+    connect(ui.pushButton_nwchem, SIGNAL(released()),
+            this, SLOT(runNwchem()));
+    connect(proc, SIGNAL(stateChanged(QProcess::ProcessState)),
+            this, SLOT(jobDone(QProcess::ProcessState)));
+    connect(ui.pushButton_killjob, SIGNAL(released()),
+            this, SLOT(killJob()));
+    connect(ui.checkBox_propertyAll ,SIGNAL(toggled(bool)),
+               this, SLOT(setPropAll (bool)));
+    connect(ui.checkBox_propertyEfield ,SIGNAL(toggled(bool)),
+               this, SLOT(setPropEfield (bool)));
+    connect(ui.checkBox_propertyAim ,SIGNAL(toggled(bool)),
+               this, SLOT(setPropAim(bool)));
+    connect(ui.checkBox_propertyEsp ,SIGNAL(toggled(bool)),
+               this, SLOT(setPropEsp (bool)));
+    connect(ui.checkBox_propertyEgrad ,SIGNAL(toggled(bool)),
+               this, SLOT(setPropEgrad (bool)));
+    connect(ui.checkBox_propertyDipole ,SIGNAL(toggled(bool)),
+               this, SLOT(setPropDip (bool)));
+    connect(ui.checkBox_propertyQuad ,SIGNAL(toggled(bool)),
+               this, SLOT(setPropQuad (bool)));
+    connect(ui.checkBox_propertyOct ,SIGNAL(toggled(bool)),
+               this, SLOT(setPropOct (bool)));
+    connect(ui.checkBox_propertyNbo ,SIGNAL(toggled(bool)),
+               this, SLOT(setPropNbo (bool)));
+    connect(ui.checkBox_propertyRaman ,SIGNAL(toggled(bool)),
+               this, SLOT(setPropRaman (bool)));
+    connect(ui.checkBox_propertyDens ,SIGNAL(toggled(bool)),
+               this, SLOT(setPropDens (bool)));
+    connect(ui.checkBox_prop ,SIGNAL(toggled(bool)),
+               this, SLOT(setProp (bool)));
+
+//    connect(ui.checkBox ,SIGNAL(),
 //           this, SLOT(opt2Changed(int)));
-
-
-
 
     QSettings settings;
     readSettings(settings);
@@ -210,10 +244,65 @@ namespace Avogadro
     updatePreviewText();
   }
 
-//  void NWChemInputDialog::set(bool n) {
-//    m_ = n;
-//    updatePreviewText();
-//  }
+    void NWChemInputDialog::runNwchem() {
+      QString str2 = saveInputFile(ui.previewText->toPlainText(), tr("NWChem Input Deck"), QString("nw"));
+      if (str2 != "") {
+        QString inpFile = str2;
+        QString workingDir = str2.remove(m_job+".nw");
+        QString str = "mpirun -np "+QString::number(ui.spinBox_nproc->value())+" nwchem "+inpFile;
+
+        proc->setWorkingDirectory(workingDir);
+        qDebug()<<str2;
+        qDebug()<<proc->workingDirectory();
+        proc->setStandardOutputFile(workingDir+m_jobout);
+
+        ui.pushButton_killjob->setEnabled(true);
+        ui.pushButton_nwchem->setEnabled(false);
+
+        proc->start(str.toLatin1());
+        QString str3 = proc->readAllStandardOutput();
+        QFile qFile(workingDir+m_jobout);
+          if (qFile.open(QIODevice::WriteOnly)) {
+            QTextStream out(&qFile); out << str3;
+            qFile.close();
+          }
+          if ( proc->state() == QProcess::NotRunning ) {
+            ui.pushButton_killjob->setEnabled(false);
+            ui.pushButton_nwchem->setEnabled(true);
+          };
+       }
+    }
+
+    void NWChemInputDialog::jobDone(QProcess::ProcessState p) {
+      if (p == 0) {
+        ui.pushButton_nwchem->setEnabled(true);
+        ui.pushButton_killjob->setEnabled(false);
+      } else if (p == 1) {
+        qDebug()<<"process running";
+      }
+    }
+
+    void NWChemInputDialog::killJob() {
+      QMessageBox msgBox;
+
+      msgBox.setWindowTitle(tr("NWChem Kill Job Warning"));
+      msgBox.setText(tr("Would you like to stop the current job? All progress will be saved in "+m_jobout.toLatin1()));
+      msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+
+      switch (msgBox.exec()) {
+        case QMessageBox::Yes:
+          proc->close();
+          break;
+        case QMessageBox::No:
+          break;
+        default:
+          // should never be reached
+          break;
+      }
+
+    }
+
+
     void NWChemInputDialog::cube2Changed(int) {
       m_dplotx = ui.spinBox_cubemm1_2->value();
       m_dploty= ui.spinBox_cubemm2_2->value();
@@ -253,6 +342,81 @@ namespace Avogadro
   }
   void NWChemInputDialog::setNoio(bool n) {
       m_noio = n;
+      updatePreviewText();
+  }
+  void NWChemInputDialog::setProp(bool n) {
+      m_prop = n;
+      if (n) {
+        ui.checkBox_propertyAll->setEnabled(true);
+        ui.checkBox_propertyEsp->setEnabled(true);
+        ui.checkBox_propertyEfield->setEnabled(true);
+        ui.checkBox_propertyEgrad->setEnabled(true);
+        ui.checkBox_propertyNbo->setEnabled(true);
+        ui.checkBox_propertyDipole->setEnabled(true);
+        ui.checkBox_propertyQuad->setEnabled(true);
+        ui.checkBox_propertyOct->setEnabled(true);
+        ui.checkBox_propertyRaman->setEnabled(true);
+        ui.checkBox_propertyAim->setEnabled(true);
+        ui.checkBox_propertyDens->setEnabled(true);
+      } else {
+        ui.checkBox_propertyAll->setEnabled(false);
+        ui.checkBox_propertyEsp->setEnabled(false);
+        ui.checkBox_propertyEfield->setEnabled(false);
+        ui.checkBox_propertyEgrad->setEnabled(false);
+        ui.checkBox_propertyNbo->setEnabled(false);
+        ui.checkBox_propertyDipole->setEnabled(false);
+        ui.checkBox_propertyQuad->setEnabled(false);
+        ui.checkBox_propertyOct->setEnabled(false);
+        ui.checkBox_propertyRaman->setEnabled(false);
+        ui.checkBox_propertyAim->setEnabled(false);
+        ui.checkBox_propertyDens->setEnabled(false);
+      }
+      updatePreviewText();
+  }
+
+  void NWChemInputDialog::setPropAll(bool n) {
+      m_propall = n;
+
+      updatePreviewText();
+  }
+  void NWChemInputDialog::setPropRaman(bool n) {
+      m_propraman = n;
+      updatePreviewText();
+  }
+  void NWChemInputDialog::setPropAim(bool n) {
+      m_propaim = n;
+      updatePreviewText();
+  }
+  void NWChemInputDialog::setPropEsp(bool n) {
+      m_propesp = n;
+      updatePreviewText();
+  }
+  void NWChemInputDialog::setPropEfield(bool n) {
+      m_propefield = n;
+      updatePreviewText();
+  }
+  void NWChemInputDialog::setPropEgrad(bool n) {
+      m_propegrad = n;
+      updatePreviewText();
+  }
+  void NWChemInputDialog::setPropDip(bool n) {
+      m_propdipole = n;
+      updatePreviewText();
+  }
+  void NWChemInputDialog::setPropQuad(bool n) {
+      m_propquad = n;
+      updatePreviewText();
+  }
+  void NWChemInputDialog::setPropOct(bool n) {
+      m_propoct = n;
+      updatePreviewText();
+  }
+  void NWChemInputDialog::setPropNbo(bool n) {
+      m_propnbo = n;
+      updatePreviewText();
+  }
+  void NWChemInputDialog::setPropDens(bool n) {
+      m_propdens = n;
       updatePreviewText();
   }
 
@@ -331,7 +495,6 @@ namespace Avogadro
   {
       updatePreviewText();
   }
-
 
   NWChemInputDialog::~NWChemInputDialog()
   {
@@ -466,10 +629,26 @@ namespace Avogadro
   }
 
 
+  void NWChemInputDialog::setJob(QString str)
+  {
+    m_job = ui.lineEdit_jobname->text();
+    m_job = m_job.replace(" ","_");
+
+    m_jobout = str+".out";
+    ui.lineEdit_output->setText(m_jobout);
+
+    m_molecule->setFileName(m_jobout);
+
+    updatePreviewText();
+  }
+
   void NWChemInputDialog::setJob()
   {
     m_job = ui.lineEdit_jobname->text();
     m_job = m_job.replace(" ","_");
+    m_jobout = ui.lineEdit_jobname->text()+".out";
+    ui.lineEdit_output->setText(m_jobout);
+
     updatePreviewText();
   }
 
@@ -731,11 +910,31 @@ namespace Avogadro
     return str;
   }
 
+  QString NWChemInputDialog::printProp() {
+    QString str;
+    str += "property\n";
+    if (m_propaim) str += "  aimfile\n";
+    if (m_propall) str += "  all\n";
+    if (m_propefield ) str += "  efield\n";
+    if (m_propegrad) str += "  efieldgrad\n";
+    if (m_propesp) str += "  esp\n";
+
+    str += "end \n\n";
+    str += "task ";
+    if (m_dft) str += "dft ";
+    if (m_scf) str += "scf ";
+    str += "property\n\n";
+
+    return str;
+  }
+
   QString NWChemInputDialog::generateInputDeck()
   {
     // Generate an input deck based on the settings of the dialog
     QString buffer;
     QTextStream mol(&buffer);
+    ui.lineEdit_output->setText(m_jobout);
+
     //Print header
     mol << "######################################################\n";
     mol << "#   NWChem Input file created using Avogadro \n";
@@ -1015,6 +1214,13 @@ namespace Avogadro
       mol << printTask(m_tt3);
       mol << getCalculationType(m_calculationType3) <<"\n"<<endl;
 
+    }
+
+    /***************************************
+     * Properties
+     * *************************************/
+    if (m_prop) {
+      mol << printProp() <<endl;
     }
 
     // Add TDDFT if needed

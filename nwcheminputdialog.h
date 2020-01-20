@@ -28,6 +28,7 @@
 
 #include "inputdialog.h"
 #include "ui_nwcheminputdialog.h"
+#include <QProcess>
 
 namespace Avogadro
 {
@@ -86,9 +87,11 @@ namespace Avogadro
     double m_vstart, m_vend, m_vref;
     bool rtVis,m_rt,m_rtRestart,m_cis,m_visRef,m_restartMain;
     bool m_dplotdens,m_ecp;
+    bool m_propall,m_propnbo,m_propesp,m_propefield,m_propaim,m_propdipole,m_propquad,m_propoct,m_propdens;
+    bool m_propegrad,m_propraman,m_prop,m_dft,m_scf,m_mp2,m_ccsd;
     //int m_multiplicity;
     //int m_charge;
-    QString m_output;
+    QString m_output,m_jobout;
     QString m_job;
     coordType m_coordType;
     bool m_dirty;
@@ -99,6 +102,7 @@ namespace Avogadro
     int nmaxiter,nmaxiter2,nmaxiter3,m_nmaxitergeom;
     int nroots,ntddftiter;
     int m_dplotx,m_dploty,m_dplotz,m_dplotpx,m_dplotpy,m_dplotpz;
+    QProcess *proc;
 
     // Generate an input deck as a string
     QString generateInputDeck();
@@ -114,6 +118,7 @@ namespace Avogadro
     QString printTheory(theoryType t );
     QString printTask(theoryType);
     QString getEcpType(ecpType);
+    QString printProp();
     QStringList getEcpAtoms();
     int getNEcpAtoms(QString);
 
@@ -133,6 +138,7 @@ namespace Avogadro
 
     void setTitle();
     void setJob();
+    void setJob(QString);
     void setGeomFile();
     void setCalculation(int);
     void setCalculation2(int);
@@ -177,6 +183,21 @@ namespace Avogadro
     void setNoio(bool);
     void setRestartMain(bool);
     void setEcp(bool);
+    void runNwchem();
+    void jobDone(QProcess::ProcessState);
+    void killJob();
+    void setPropAll(bool);
+    void setPropRaman(bool);
+    void setPropEfield(bool);
+    void setPropEsp(bool);
+    void setPropAim(bool);
+    void setPropDens(bool);
+    void setPropDip(bool);
+    void setPropQuad(bool);
+    void setPropOct(bool);
+    void setPropEgrad(bool);
+    void setPropNbo(bool);
+    void setProp(bool);
   };
 }
 
