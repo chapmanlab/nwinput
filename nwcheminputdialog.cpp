@@ -36,6 +36,7 @@
 #include <QMessageBox>
 #include <QDebug>
 #include <QFile>
+#include <QScrollBar>
 
 using namespace OpenBabel;
 
@@ -232,6 +233,8 @@ namespace Avogadro
                this, SLOT(setPropDens (bool)));
     connect(ui.checkBox_prop ,SIGNAL(toggled(bool)),
                this, SLOT(setProp (bool)));
+    connect(ui.pushButton_updateOutput, SIGNAL(released()),
+            this, SLOT(updateOutputText()));
 
 //    connect(ui.checkBox ,SIGNAL(),
 //           this, SLOT(opt2Changed(int)));
@@ -248,20 +251,20 @@ namespace Avogadro
       QString str2 = saveInputFile(ui.previewText->toPlainText(), tr("NWChem Input Deck"), QString("nw"));
       if (str2 != "") {
         QString inpFile = str2;
-        QString workingDir = str2.remove(m_job+".nw");
+        m_workingDir = str2.remove(m_job+".nw");
         QString str = "mpirun -np "+QString::number(ui.spinBox_nproc->value())+" nwchem "+inpFile;
 
-        proc->setWorkingDirectory(workingDir);
+        proc->setWorkingDirectory(m_workingDir);
         qDebug()<<str2;
         qDebug()<<proc->workingDirectory();
-        proc->setStandardOutputFile(workingDir+m_jobout);
+        proc->setStandardOutputFile(m_workingDir+m_jobout);
 
         ui.pushButton_killjob->setEnabled(true);
         ui.pushButton_nwchem->setEnabled(false);
 
         proc->start(str.toLatin1());
         QString str3 = proc->readAllStandardOutput();
-        QFile qFile(workingDir+m_jobout);
+        QFile qFile(m_workingDir+m_jobout);
           if (qFile.open(QIODevice::WriteOnly)) {
             QTextStream out(&qFile); out << str3;
             qFile.close();
@@ -565,6 +568,15 @@ namespace Avogadro
     }
   }
 
+  void NWChemInputDialog::updateOutputText() {
+    QFile qfile(m_workingDir+m_jobout);
+    qfile.open(QFile::ReadOnly | QFile::Text);
+    QTextStream ReadFile(&qfile);
+    ui.textEdit_out->setText(ReadFile.readAll());
+    ui.textEdit_out->verticalScrollBar()->setValue(ui.textEdit_out->verticalScrollBar()->maximum());
+
+  }
+
   void NWChemInputDialog::resetClicked()
   {
     // Reset the form to defaults
@@ -634,7 +646,7 @@ namespace Avogadro
     m_job = ui.lineEdit_jobname->text();
     m_job = m_job.replace(" ","_");
 
-    m_jobout = str+".out";
+    m_jobout = m_job+".out";
     ui.lineEdit_output->setText(m_jobout);
 
     m_molecule->setFileName(m_jobout);
@@ -646,7 +658,7 @@ namespace Avogadro
   {
     m_job = ui.lineEdit_jobname->text();
     m_job = m_job.replace(" ","_");
-    m_jobout = ui.lineEdit_jobname->text()+".out";
+    m_jobout = m_job+".out";
     ui.lineEdit_output->setText(m_jobout);
 
     updatePreviewText();
@@ -858,12 +870,12 @@ namespace Avogadro
         case M062X:
         str += "dft\n";
         str += getIo();
-        str += getOpenShell(m_openShell)+"  xc pbe0\n  mulliken\n  maxiter "+QString::number(nmaxiter)+"\n  mult " + QString::number(m_multiplicity) + "\nend\n\n";
+        str += getOpenShell(m_openShell)+"  xc m062x\n  mulliken\n  maxiter "+QString::number(nmaxiter)+"\n  mult " + QString::number(m_multiplicity) + "\nend\n\n";
         break;
         case B3LYP:
         str += "dft\n";
         str += getIo();
-        str += getOpenShell(m_openShell)+"  xc pbe0\n  mulliken\n  maxiter "+QString::number(nmaxiter)+"\n  mult " + QString::number(m_multiplicity) + "\nend\n\n";
+        str += getOpenShell(m_openShell)+"  xc b3lyp\n  mulliken\n  maxiter "+QString::number(nmaxiter)+"\n  mult " + QString::number(m_multiplicity) + "\nend\n\n";
           break;
         case MP2:
           str += "mp2\n";
@@ -1474,7 +1486,7 @@ namespace Avogadro
       case M062X:
         return "M062X";
       default:
-        return "PBE0";
+        return "B3LYP";
     }
   }
 
@@ -1491,6 +1503,8 @@ namespace Avogadro
          return "6-31g";
       case B631gp:
         return "6-31g*";
+      case B631gpp:
+        return "6-31g**";
       case B631plusgp:
         return "6-31+g*";
       case B6311g:

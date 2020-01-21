@@ -47,7 +47,7 @@ namespace Avogadro
       
     enum calculationType{SP, OPT, FREQ};
     enum theoryType{RHF, B3LYP, MP2, CCSD, PBE0, M062X};
-    enum basisType{STO3G, B321g, B631g, B631gp, B631plusgp, B6311g, B6311gp, ccpvdz, ccpvtz, augccpvdz, augccpvtz, LANL2DZ};
+    enum basisType{STO3G, B321g, B631g, B631gp, B631gpp, B631plusgp, B6311g, B6311gp, ccpvdz, ccpvtz, augccpvdz, augccpvtz, LANL2DZ};
     enum ecpType{LANL2DZ_ECP,CRENBL,CRENBS,STUTTGARTRLC,STUTTGARTRSC,SBKJCVDZ};
     enum coordType{CARTESIAN, ZMATRIX, ZMATRIX_COMPACT};
     enum spinType{total, alpha, beta, spindens};
@@ -92,7 +92,7 @@ namespace Avogadro
     //int m_multiplicity;
     //int m_charge;
     QString m_output,m_jobout;
-    QString m_job;
+    QString m_job,m_workingDir;
     coordType m_coordType;
     bool m_dirty;
     bool m_warned;
@@ -127,6 +127,7 @@ namespace Avogadro
 
   public Q_SLOTS:
     void updatePreviewText();
+    void updateOutputText();
 
   private Q_SLOTS:
     //! Button Slots
