@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1451</width>
+    <width>1461</width>
     <height>942</height>
    </rect>
   </property>
@@ -20,10 +20,532 @@
    <string>NWChem Input</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_12">
+   <item row="0" column="1" rowspan="4">
+    <widget class="QTabWidget" name="tabWidget_2">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>620</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="tab_input">
+      <attribute name="title">
+       <string>Input</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_20">
+       <item row="0" column="0">
+        <widget class="QTextEdit" name="previewText">
+         <property name="minimumSize">
+          <size>
+           <width>600</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Monospace</family>
+          </font>
+         </property>
+         <property name="acceptRichText">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_output">
+      <attribute name="title">
+       <string>Output</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_21">
+       <item row="1" column="0">
+        <widget class="QTextEdit" name="textEdit_out">
+         <property name="minimumSize">
+          <size>
+           <width>610</width>
+           <height>0</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <layout class="QGridLayout" name="gridLayout_24">
+         <item row="0" column="0">
+          <spacer name="horizontalSpacer_4">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="0" column="1">
+          <widget class="QPushButton" name="pushButton_updateOutput">
+           <property name="text">
+            <string>Update</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
    <item row="2" column="0">
+    <widget class="Line" name="line_3">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <layout class="QGridLayout" name="gridLayout_3">
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="titleLine">
+       <property name="text">
+        <string>Title</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_7">
+       <property name="text">
+        <string>Tit&amp;le:</string>
+       </property>
+       <property name="buddy">
+        <cstring>titleLine</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="label_5">
+       <property name="text">
+        <string>Basis:</string>
+       </property>
+       <property name="buddy">
+        <cstring>basisCombo</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="3">
+      <widget class="QCheckBox" name="checkBox_openShell">
+       <property name="text">
+        <string>Open Shell</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="0">
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>Charge:</string>
+       </property>
+       <property name="buddy">
+        <cstring>chargeSpin</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="4">
+      <widget class="QComboBox" name="coordCombo">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <item>
+        <property name="text">
+         <string>Cartesian</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Z-matrix</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Z-matrix (compact)</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="7" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QCheckBox" name="checkBox_geomEditor">
+         <property name="text">
+          <string>Editor</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="checkBox_geomxyz">
+         <property name="text">
+          <string>XYZ file</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="5" column="1">
+      <widget class="QComboBox" name="basisCombo">
+       <property name="accessibleDescription">
+        <string notr="true"/>
+       </property>
+       <property name="currentIndex">
+        <number>1</number>
+       </property>
+       <item>
+        <property name="text">
+         <string>STO-3g</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>3-21g</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>6-31g</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>6-31g*</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>6-31g**</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>6-31+g*</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>6-311g</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>6-311g*</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>cc-pvdz</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>cc-pvtz</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>aug-ccpvdz</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>aug-ccpvtz</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QLineEdit" name="lineEdit_jobname">
+       <property name="text">
+        <string>molecule</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_13">
+       <property name="text">
+        <string>Job name:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="2">
+      <widget class="QCheckBox" name="checkBox_restartMain">
+       <property name="text">
+        <string>Restart from previous calculation</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="1">
+      <widget class="QSpinBox" name="chargeSpin">
+       <property name="minimum">
+        <number>-99</number>
+       </property>
+       <property name="value">
+        <number>0</number>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="4">
+      <widget class="QSpinBox" name="spinBox_geomIter">
+       <property name="maximum">
+        <number>1000</number>
+       </property>
+       <property name="value">
+        <number>50</number>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QComboBox" name="calculationCombo">
+       <property name="currentIndex">
+        <number>1</number>
+       </property>
+       <item>
+        <property name="text">
+         <string>Single Point Energy</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Geometry Optimization</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Frequencies</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="7" column="2">
+      <widget class="QLineEdit" name="lineEdit_geom">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="text">
+        <string>.xyz</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Theory:</string>
+       </property>
+       <property name="buddy">
+        <cstring>theoryCombo</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="2">
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <item>
+        <widget class="QLabel" name="label_6">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>&amp;Multiplicity:</string>
+         </property>
+         <property name="buddy">
+          <cstring>multiplicitySpin</cstring>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QSpinBox" name="multiplicitySpin">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="value">
+          <number>1</number>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="7" column="3" alignment="Qt::AlignRight">
+      <widget class="QLabel" name="label_10">
+       <property name="text">
+        <string>Geometry Format:</string>
+       </property>
+       <property name="buddy">
+        <cstring>coordCombo</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="4">
+      <widget class="QLineEdit" name="lineEdit_ecp">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="0">
+      <widget class="QLabel" name="label_15">
+       <property name="text">
+        <string>Geometry:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="2">
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QCheckBox" name="checkBox_ecp">
+         <property name="text">
+          <string>ECP:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="comboBox_ecp">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <item>
+          <property name="text">
+           <string>LANL2DZ</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>CRENBL</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>CRENBS</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Stuttgart RLC</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Suttgart RSC</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>SBJKC VDC</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="5" column="3" alignment="Qt::AlignRight">
+      <widget class="QLabel" name="label_36">
+       <property name="text">
+        <string>ECP atoms:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="2">
+      <widget class="QCheckBox" name="checkBox_xyz">
+       <property name="text">
+        <string>Save each geometry as .xyz</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Ca&amp;lculation:</string>
+       </property>
+       <property name="buddy">
+        <cstring>calculationCombo</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QComboBox" name="theoryCombo">
+       <property name="editable">
+        <bool>false</bool>
+       </property>
+       <property name="currentIndex">
+        <number>1</number>
+       </property>
+       <item>
+        <property name="text">
+         <string>HF</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>B3LYP</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>MP2</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CCSD</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>PBE0</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>M062X</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="3" column="3">
+      <widget class="QLabel" name="label_19">
+       <property name="text">
+        <string>Maximum Geometry Steps:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="1" alignment="Qt::AlignRight">
+      <widget class="QLabel" name="label_30">
+       <property name="text">
+        <string>Symmetry:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="2">
+      <widget class="QLineEdit" name="lineEdit_symmetry"/>
+     </item>
+    </layout>
+   </item>
+   <item row="3" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>5</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tab_5">
       <attribute name="title">
@@ -120,87 +642,20 @@
          <layout class="QGridLayout" name="gridLayout_2">
           <item row="0" column="1" colspan="3">
            <layout class="QGridLayout" name="gridLayout_5">
-            <item row="0" column="5">
-             <widget class="QLabel" name="label_30">
-              <property name="text">
-               <string>Geom Iter:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="6">
-             <widget class="QSpinBox" name="spinBox_iter2">
-              <property name="whatsThis">
-               <string extracomment="Optimization maxiter"/>
-              </property>
-              <property name="minimum">
-               <number>50</number>
-              </property>
-              <property name="maximum">
-               <number>500</number>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="0">
-             <widget class="QCheckBox" name="checkBox_opt2">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
+            <item row="2" column="0">
+             <widget class="QCheckBox" name="checkBox_opt3">
+              <property name="enabled">
+               <bool>false</bool>
               </property>
               <property name="text">
-               <string>Calc. 2</string>
+               <string>Calc. 3</string>
               </property>
              </widget>
             </item>
-            <item row="0" column="3">
-             <widget class="QCheckBox" name="checkBox_xyz2">
-              <property name="text">
-               <string>XYZ</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="2">
-             <widget class="QComboBox" name="comboBox_calc2theory">
+            <item row="2" column="4">
+             <widget class="QComboBox" name="comboBox_basis3">
               <property name="currentIndex">
-               <number>1</number>
-              </property>
-              <item>
-               <property name="text">
-                <string>HF</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>B3LYP</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>MP2</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>CCSD</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>PBE0</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>M062X</string>
-               </property>
-              </item>
-             </widget>
-            </item>
-            <item row="0" column="4">
-             <widget class="QComboBox" name="comboBox_basis2">
-              <property name="currentIndex">
-               <number>2</number>
+               <number>8</number>
               </property>
               <item>
                <property name="text">
@@ -220,6 +675,11 @@
               <item>
                <property name="text">
                 <string>6-31g*</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>6-31g**</string>
                </property>
               </item>
               <item>
@@ -264,61 +724,7 @@
               </item>
              </widget>
             </item>
-            <item row="0" column="1">
-             <widget class="QComboBox" name="comboBox_calc2">
-              <property name="currentIndex">
-               <number>1</number>
-              </property>
-              <item>
-               <property name="text">
-                <string>Single Point Energy</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Geometry Optimization</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Frequencies</string>
-               </property>
-              </item>
-             </widget>
-            </item>
-            <item row="1" column="0">
-             <widget class="QCheckBox" name="checkBox_opt3">
-              <property name="enabled">
-               <bool>false</bool>
-              </property>
-              <property name="text">
-               <string>Calc. 3</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1">
-             <widget class="QComboBox" name="comboBox_calc3">
-              <property name="currentIndex">
-               <number>1</number>
-              </property>
-              <item>
-               <property name="text">
-                <string>Single Point Energy</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Geometry Optimization</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Frequencies</string>
-               </property>
-              </item>
-             </widget>
-            </item>
-            <item row="1" column="2">
+            <item row="2" column="2">
              <widget class="QComboBox" name="comboBox_calc3theory">
               <property name="currentIndex">
                <number>1</number>
@@ -355,17 +761,109 @@
               </item>
              </widget>
             </item>
-            <item row="1" column="3">
+            <item row="1" column="5">
+             <widget class="QSpinBox" name="spinBox_iter2">
+              <property name="whatsThis">
+               <string extracomment="Optimization maxiter"/>
+              </property>
+              <property name="minimum">
+               <number>50</number>
+              </property>
+              <property name="maximum">
+               <number>500</number>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QCheckBox" name="checkBox_opt2">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>Calc. 2</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="3">
              <widget class="QCheckBox" name="checkBox_xyz3">
               <property name="text">
                <string>XYZ</string>
               </property>
              </widget>
             </item>
-            <item row="1" column="4">
-             <widget class="QComboBox" name="comboBox_basis3">
+            <item row="1" column="3">
+             <widget class="QCheckBox" name="checkBox_xyz2">
+              <property name="text">
+               <string>XYZ</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="2">
+             <widget class="QComboBox" name="comboBox_calc2theory">
               <property name="currentIndex">
-               <number>8</number>
+               <number>1</number>
+              </property>
+              <item>
+               <property name="text">
+                <string>HF</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>B3LYP</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>MP2</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>CCSD</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>PBE0</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>M062X</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QComboBox" name="comboBox_calc3">
+              <property name="currentIndex">
+               <number>1</number>
+              </property>
+              <item>
+               <property name="text">
+                <string>Single Point Energy</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Geometry Optimization</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Frequencies</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item row="1" column="4">
+             <widget class="QComboBox" name="comboBox_basis2">
+              <property name="currentIndex">
+               <number>2</number>
               </property>
               <item>
                <property name="text">
@@ -385,6 +883,11 @@
               <item>
                <property name="text">
                 <string>6-31g*</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>6-31g**</string>
                </property>
               </item>
               <item>
@@ -429,14 +932,14 @@
               </item>
              </widget>
             </item>
-            <item row="1" column="5">
-             <widget class="QLabel" name="label_34">
+            <item row="0" column="2">
+             <widget class="QLabel" name="label_46">
               <property name="text">
-               <string>Geom Iter:</string>
+               <string>Theory:</string>
               </property>
              </widget>
             </item>
-            <item row="1" column="6">
+            <item row="2" column="5">
              <widget class="QSpinBox" name="spinBox_iter3">
               <property name="whatsThis">
                <string extracomment="Optimization maxiter"/>
@@ -446,6 +949,42 @@
               </property>
               <property name="maximum">
                <number>500</number>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QComboBox" name="comboBox_calc2">
+              <property name="currentIndex">
+               <number>1</number>
+              </property>
+              <item>
+               <property name="text">
+                <string>Single Point Energy</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Geometry Optimization</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Frequencies</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item row="0" column="4">
+             <widget class="QLabel" name="label_47">
+              <property name="text">
+               <string>Basis:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="5">
+             <widget class="QLabel" name="label_48">
+              <property name="text">
+               <string>Maximum Iterations:</string>
               </property>
              </widget>
             </item>
@@ -594,8 +1133,6 @@
         </spacer>
        </item>
       </layout>
-      <zorder>label_17</zorder>
-      <zorder>frame_3</zorder>
       <zorder>frame_2</zorder>
       <zorder>verticalSpacer</zorder>
       <zorder>frame</zorder>
@@ -1518,6 +2055,9 @@
            <property name="text">
             <string>molecule.out</string>
            </property>
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
           </widget>
          </item>
          <item row="1" column="3">
@@ -1583,7 +2123,7 @@
      </widget>
     </widget>
    </item>
-   <item row="3" column="0">
+   <item row="4" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <property name="sizeConstraint">
       <enum>QLayout::SetFixedSize</enum>
@@ -1647,529 +2187,109 @@
      </item>
     </layout>
    </item>
-   <item row="1" column="0">
-    <widget class="Line" name="line_3">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1" rowspan="3">
-    <widget class="QTabWidget" name="tabWidget_2">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>620</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="currentIndex">
-      <number>1</number>
-     </property>
-     <widget class="QWidget" name="tab_input">
-      <attribute name="title">
-       <string>Input</string>
-      </attribute>
-      <layout class="QGridLayout" name="gridLayout_20">
-       <item row="0" column="0">
-        <widget class="QTextEdit" name="previewText">
-         <property name="minimumSize">
-          <size>
-           <width>600</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Monospace</family>
-          </font>
-         </property>
-         <property name="acceptRichText">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="tab_output">
-      <attribute name="title">
-       <string>Output</string>
-      </attribute>
-      <layout class="QGridLayout" name="gridLayout_21">
-       <item row="1" column="0">
-        <widget class="QTextEdit" name="textEdit_out">
-         <property name="minimumSize">
-          <size>
-           <width>610</width>
-           <height>0</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <layout class="QGridLayout" name="gridLayout_24">
-         <item row="0" column="0">
-          <spacer name="horizontalSpacer_4">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item row="0" column="1">
-          <widget class="QPushButton" name="pushButton_updateOutput">
-           <property name="text">
-            <string>Update</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-      </layout>
-     </widget>
-    </widget>
-   </item>
-   <item row="0" column="0">
-    <layout class="QGridLayout" name="gridLayout_3">
-     <item row="0" column="1">
-      <widget class="QLineEdit" name="titleLine">
-       <property name="text">
-        <string>Title</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="0">
-      <widget class="QLabel" name="label_7">
-       <property name="text">
-        <string>Tit&amp;le:</string>
-       </property>
-       <property name="buddy">
-        <cstring>titleLine</cstring>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="0">
-      <widget class="QLabel" name="label_5">
-       <property name="text">
-        <string>Basis:</string>
-       </property>
-       <property name="buddy">
-        <cstring>basisCombo</cstring>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="0">
-      <widget class="QLabel" name="label_3">
-       <property name="text">
-        <string>Charge:</string>
-       </property>
-       <property name="buddy">
-        <cstring>chargeSpin</cstring>
-       </property>
-      </widget>
-     </item>
-     <item row="7" column="4">
-      <widget class="QComboBox" name="coordCombo">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-       <property name="currentIndex">
-        <number>0</number>
-       </property>
-       <item>
-        <property name="text">
-         <string>Cartesian</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Z-matrix</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Z-matrix (compact)</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item row="7" column="1">
-      <layout class="QHBoxLayout" name="horizontalLayout">
-       <item>
-        <widget class="QCheckBox" name="checkBox_geomEditor">
-         <property name="text">
-          <string>Editor</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QCheckBox" name="checkBox_geomxyz">
-         <property name="text">
-          <string>XYZ file</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item row="5" column="1">
-      <widget class="QComboBox" name="basisCombo">
-       <property name="accessibleDescription">
-        <string notr="true"/>
-       </property>
-       <property name="currentIndex">
-        <number>1</number>
-       </property>
-       <item>
-        <property name="text">
-         <string>STO-3g</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>3-21g</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>6-31g</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>6-31g*</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>6-31g**</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>6-31+g*</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>6-311g</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>6-311g*</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>cc-pvdz</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>cc-pvtz</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>aug-ccpvdz</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>aug-ccpvtz</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QLineEdit" name="lineEdit_jobname">
-       <property name="text">
-        <string>molecule</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="label_13">
-       <property name="text">
-        <string>Job name:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="2">
-      <widget class="QCheckBox" name="checkBox_restartMain">
-       <property name="text">
-        <string>Restart from previous calculation</string>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="1">
-      <widget class="QSpinBox" name="chargeSpin">
-       <property name="minimum">
-        <number>-99</number>
-       </property>
-       <property name="value">
-        <number>0</number>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="1">
-      <widget class="QComboBox" name="calculationCombo">
-       <property name="currentIndex">
-        <number>1</number>
-       </property>
-       <item>
-        <property name="text">
-         <string>Single Point Energy</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Geometry Optimization</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Frequencies</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item row="7" column="2">
-      <widget class="QLineEdit" name="lineEdit_geom">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-       <property name="text">
-        <string>.xyz</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="0">
-      <widget class="QLabel" name="label_2">
-       <property name="text">
-        <string>Theory:</string>
-       </property>
-       <property name="buddy">
-        <cstring>theoryCombo</cstring>
-       </property>
-      </widget>
-     </item>
-     <item row="7" column="3" alignment="Qt::AlignRight">
-      <widget class="QLabel" name="label_10">
-       <property name="text">
-        <string>For&amp;mat:</string>
-       </property>
-       <property name="buddy">
-        <cstring>coordCombo</cstring>
-       </property>
-      </widget>
-     </item>
-     <item row="7" column="0">
-      <widget class="QLabel" name="label_15">
-       <property name="text">
-        <string>Geometry:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="2">
-      <widget class="QCheckBox" name="checkBox_xyz">
-       <property name="text">
-        <string>Save each geometry as .xyz</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>Ca&amp;lculation:</string>
-       </property>
-       <property name="buddy">
-        <cstring>calculationCombo</cstring>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="1">
-      <widget class="QComboBox" name="theoryCombo">
-       <property name="editable">
-        <bool>false</bool>
-       </property>
-       <property name="currentIndex">
-        <number>1</number>
-       </property>
-       <item>
-        <property name="text">
-         <string>HF</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>B3LYP</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>MP2</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>CCSD</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>PBE0</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>M062X</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item row="5" column="2">
-      <layout class="QHBoxLayout" name="horizontalLayout_2">
-       <item>
-        <widget class="QCheckBox" name="checkBox_ecp">
-         <property name="text">
-          <string>ECP:</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QComboBox" name="comboBox_ecp">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <item>
-          <property name="text">
-           <string>LANL2DZ</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>CRENBL</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>CRENBS</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Stuttgart RLC</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Suttgart RSC</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>SBJKC VDC</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item row="5" column="3" alignment="Qt::AlignRight">
-      <widget class="QLabel" name="label_36">
-       <property name="text">
-        <string>ECP atoms:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="4">
-      <widget class="QLineEdit" name="lineEdit_ecp">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="3">
-      <widget class="QLabel" name="label_19">
-       <property name="text">
-        <string>Maximum Geometry Steps:</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="4">
-      <widget class="QSpinBox" name="spinBox_geomIter">
-       <property name="maximum">
-        <number>1000</number>
-       </property>
-       <property name="value">
-        <number>50</number>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="2">
-      <layout class="QHBoxLayout" name="horizontalLayout_4">
-       <item>
-        <widget class="QLabel" name="label_6">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="text">
-          <string>&amp;Multiplicity:</string>
-         </property>
-         <property name="buddy">
-          <cstring>multiplicitySpin</cstring>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QSpinBox" name="multiplicitySpin">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="minimum">
-          <number>1</number>
-         </property>
-         <property name="value">
-          <number>1</number>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item row="6" column="3">
-      <widget class="QCheckBox" name="checkBox_openShell">
-       <property name="text">
-        <string>Open Shell</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
   </layout>
  </widget>
  <tabstops>
+  <tabstop>titleLine</tabstop>
+  <tabstop>checkBox_restartMain</tabstop>
+  <tabstop>lineEdit_jobname</tabstop>
   <tabstop>calculationCombo</tabstop>
+  <tabstop>checkBox_xyz</tabstop>
+  <tabstop>spinBox_geomIter</tabstop>
   <tabstop>theoryCombo</tabstop>
   <tabstop>basisCombo</tabstop>
+  <tabstop>checkBox_ecp</tabstop>
+  <tabstop>comboBox_ecp</tabstop>
+  <tabstop>lineEdit_ecp</tabstop>
   <tabstop>chargeSpin</tabstop>
-  <tabstop>generateButton</tabstop>
-  <tabstop>closeButton</tabstop>
+  <tabstop>multiplicitySpin</tabstop>
+  <tabstop>checkBox_openShell</tabstop>
+  <tabstop>checkBox_geomEditor</tabstop>
+  <tabstop>checkBox_geomxyz</tabstop>
+  <tabstop>lineEdit_geom</tabstop>
+  <tabstop>coordCombo</tabstop>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>spinBox_iter</tabstop>
+  <tabstop>checkBox_direct</tabstop>
+  <tabstop>checkBox_semidirect</tabstop>
+  <tabstop>checkBox_noio</tabstop>
+  <tabstop>checkBox_opt2</tabstop>
+  <tabstop>comboBox_calc2</tabstop>
+  <tabstop>comboBox_calc2theory</tabstop>
+  <tabstop>checkBox_xyz2</tabstop>
+  <tabstop>comboBox_basis2</tabstop>
+  <tabstop>spinBox_iter2</tabstop>
+  <tabstop>checkBox_opt3</tabstop>
+  <tabstop>comboBox_calc3</tabstop>
+  <tabstop>comboBox_calc3theory</tabstop>
+  <tabstop>checkBox_xyz3</tabstop>
+  <tabstop>comboBox_basis3</tabstop>
+  <tabstop>spinBox_iter3</tabstop>
+  <tabstop>checkBox_prop</tabstop>
+  <tabstop>checkBox_propertyAll</tabstop>
+  <tabstop>checkBox_propertyEsp</tabstop>
+  <tabstop>checkBox_propertyEgrad</tabstop>
+  <tabstop>checkBox_propertyOct</tabstop>
+  <tabstop>checkBox_propertyRaman</tabstop>
+  <tabstop>checkBox_propertyEfield</tabstop>
+  <tabstop>checkBox_propertyDipole</tabstop>
+  <tabstop>checkBox_propertyNbo</tabstop>
+  <tabstop>checkBox_propertyAim</tabstop>
+  <tabstop>checkBox_propertyDens</tabstop>
+  <tabstop>checkBox_propertyQuad</tabstop>
+  <tabstop>checkBox_tddft</tabstop>
+  <tabstop>spinBox_nroots</tabstop>
+  <tabstop>checkBox_tddftsinglet</tabstop>
+  <tabstop>checkBox_tddfttriplet</tabstop>
+  <tabstop>checkBox_cis</tabstop>
+  <tabstop>spinBox_tddftiter</tabstop>
+  <tabstop>checkBox_density</tabstop>
+  <tabstop>checkBox_mo</tabstop>
+  <tabstop>spinBox_homo</tabstop>
+  <tabstop>spinBox_frontier</tabstop>
+  <tabstop>checkBox_transden</tabstop>
+  <tabstop>spinBox_dplotnstates</tabstop>
+  <tabstop>spinBox_cubemm1</tabstop>
+  <tabstop>spinBox_cubemm2</tabstop>
+  <tabstop>spinBox_cubemm3</tabstop>
+  <tabstop>spinBox_cubep1</tabstop>
+  <tabstop>spinBox_cubep2</tabstop>
+  <tabstop>spinBox_cubep3</tabstop>
+  <tabstop>comboBox_spin</tabstop>
+  <tabstop>checkBox_rttddft</tabstop>
+  <tabstop>checkBox_restart</tabstop>
+  <tabstop>doubleSpinBox_tmax</tabstop>
+  <tabstop>doubleSpinBox_dt</tabstop>
+  <tabstop>comboBox_field</tabstop>
+  <tabstop>doubleSpinBox_center</tabstop>
+  <tabstop>comboBox_polarization</tabstop>
+  <tabstop>doubleSpinBox_freq</tabstop>
+  <tabstop>doubleSpinBox_width</tabstop>
+  <tabstop>doubleSpinBox_max</tabstop>
+  <tabstop>checkBox_rtVis</tabstop>
+  <tabstop>doubleSpinBox_startVis</tabstop>
+  <tabstop>doubleSpinBox_endVis</tabstop>
+  <tabstop>checkBox_visRef</tabstop>
+  <tabstop>doubleSpinBox_refVis</tabstop>
+  <tabstop>spinBox_cubemm1_2</tabstop>
+  <tabstop>spinBox_cubemm2_2</tabstop>
+  <tabstop>spinBox_cubemm3_2</tabstop>
+  <tabstop>spinBox_cubep1_2</tabstop>
+  <tabstop>spinBox_cubep2_2</tabstop>
+  <tabstop>spinBox_cubep3_2</tabstop>
+  <tabstop>comboBox_rtspin</tabstop>
+  <tabstop>spinBox_nproc</tabstop>
+  <tabstop>lineEdit_output</tabstop>
+  <tabstop>pushButton_nwchem</tabstop>
+  <tabstop>pushButton_killjob</tabstop>
   <tabstop>resetButton</tabstop>
   <tabstop>enableFormButton</tabstop>
+  <tabstop>moreButton</tabstop>
+  <tabstop>generateButton</tabstop>
+  <tabstop>closeButton</tabstop>
+  <tabstop>tabWidget_2</tabstop>
+  <tabstop>textEdit_out</tabstop>
+  <tabstop>pushButton_updateOutput</tabstop>
  </tabstops>
  <resources/>
  <connections>
@@ -2180,8 +2300,8 @@
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>451</x>
-     <y>411</y>
+     <x>814</x>
+     <y>929</y>
     </hint>
     <hint type="destinationlabel">
      <x>258</x>

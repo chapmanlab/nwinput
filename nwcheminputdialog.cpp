@@ -865,7 +865,9 @@ namespace Avogadro
         case PBE0:
          str += "dft\n";
          str += getIo();
-         str += getOpenShell(m_openShell)+"  xc pbe0\n  mulliken\n  maxiter "+QString::number(nmaxiter)+"\n  mult " + QString::number(m_multiplicity) + "\nend\n\n";
+         str += getOpenShell(m_openShell)+"  xc pbe0\n  mulliken\n";
+         str += "print \"final vectors analysis\" \"final vectors symmetry\"\n";
+         str += "  maxiter "+QString::number(nmaxiter)+"\n  mult " + QString::number(m_multiplicity) + "\nend\n\n";
         break;
         case M062X:
         str += "dft\n";
@@ -967,7 +969,10 @@ namespace Avogadro
     mol << "title \"" << m_title << "\"\n";
 
     // Ecce file
-    mol << "ecce_print "<< m_job <<"_ecce.out \n";
+    if (!m_rtRestart)
+      mol << "ecce_print "<< m_job <<"_ecce.out \n";
+    else
+      mol << "ecce_print "<< m_job <<"_restart_ecce.out \n";
 
     // Now for the charge
     mol << "charge " << m_charge << "\n\n";
