@@ -584,7 +584,7 @@ namespace Avogadro
     ui.calculationCombo->setCurrentIndex(1);
     ui.theoryCombo->setCurrentIndex(3);
     ui.basisCombo->setCurrentIndex(2);
-    ui.multiplicitySpin->setValue(0);
+    //ui.multiplicitySpin->setValue(1);
     ui.chargeSpin->setValue(0);
     ui.previewText->setText(generateInputDeck());
     ui.previewText->document()->setModified(false);
@@ -689,12 +689,6 @@ namespace Avogadro
   {
     m_theoryType = (NWChemInputDialog::theoryType) n;
     ui.basisCombo->setEnabled(true);
-
-    if (m_theoryType == B3LYP) {
-      ui.multiplicitySpin->setEnabled(true);
-    } else {
-      ui.multiplicitySpin->setEnabled(false);
-    }
 
     updatePreviewText();
   }
@@ -1164,6 +1158,15 @@ namespace Avogadro
        * Basis
        * ***************/
       mol << printBasisDeck(m_basisType);
+    }
+
+    /***********************
+     * Multiplicity
+     * *********************/
+    if (m_openShell) {
+      ui.multiplicitySpin->setEnabled(true);
+    } else {
+      ui.multiplicitySpin->setEnabled(false);
     }
 
     /**************************************************************************/
