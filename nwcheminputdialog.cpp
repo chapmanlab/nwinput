@@ -201,6 +201,18 @@ namespace Avogadro
            this, SLOT(cube2Changed(int)));
     connect(ui.spinBox_cubep3_2 ,SIGNAL(valueChanged(int)),
            this, SLOT(cube2Changed(int)));
+    connect(ui.spinBox_cubemm1 ,SIGNAL(valueChanged(int)),
+           this, SLOT(cube2Changed(int)));
+    connect(ui.spinBox_cubemm2 ,SIGNAL(valueChanged(int)),
+           this, SLOT(cube2Changed(int)));
+    connect(ui.spinBox_cubemm3 ,SIGNAL(valueChanged(int)),
+           this, SLOT(cube2Changed(int)));
+    connect(ui.spinBox_cubep1 ,SIGNAL(valueChanged(int)),
+           this, SLOT(cube2Changed(int)));
+    connect(ui.spinBox_cubep2 ,SIGNAL(valueChanged(int)),
+           this, SLOT(cube2Changed(int)));
+    connect(ui.spinBox_cubep3 ,SIGNAL(valueChanged(int)),
+           this, SLOT(cube2Changed(int)));
     connect(ui.lineEdit_output, SIGNAL(textEdited(QString)),
             this, SLOT(setJob(QString)));
     connect(ui.pushButton_nwchem, SIGNAL(released()),
@@ -235,6 +247,8 @@ namespace Avogadro
                this, SLOT(setProp (bool)));
     connect(ui.pushButton_updateOutput, SIGNAL(released()),
             this, SLOT(updateOutputText()));
+    connect(ui.lineEdit_restartJob, SIGNAL(textEdited(QString)),
+            this, SLOT(restartJobNameChanged(QString)));
 
 //    connect(ui.checkBox ,SIGNAL(),
 //           this, SLOT(opt2Changed(int)));
@@ -247,6 +261,13 @@ namespace Avogadro
     updatePreviewText();
   }
 
+    void NWChemInputDialog::restartJobNameChanged(QString str) {
+      m_restartJobName = ui.lineEdit_restartJob->text();
+      m_restartJobName = m_restartJobName.replace(" ","_");
+
+      updatePreviewText();
+    }
+
     void NWChemInputDialog::runNwchem() {
       QString str2 = saveInputFile(ui.previewText->toPlainText(), tr("NWChem Input Deck"), QString("nw"));
       if (str2 != "") {
@@ -255,8 +276,6 @@ namespace Avogadro
         QString str = "mpirun -np "+QString::number(ui.spinBox_nproc->value())+" nwchem "+inpFile;
 
         proc->setWorkingDirectory(m_workingDir);
-        qDebug()<<str2;
-        qDebug()<<proc->workingDirectory();
         proc->setStandardOutputFile(m_workingDir+m_jobout);
 
         ui.pushButton_killjob->setEnabled(true);
@@ -658,6 +677,7 @@ namespace Avogadro
   {
     m_job = ui.lineEdit_jobname->text();
     m_job = m_job.replace(" ","_");
+
     m_jobout = m_job+".out";
     ui.lineEdit_output->setText(m_jobout);
 
@@ -776,13 +796,20 @@ namespace Avogadro
         str += " spherical";
 
       str += "\n";
+      if (!m_ecp)
+        str += "  * library " + getBasisType(t) + '\n';
 
-      str += "  * library " + getBasisType(t) + '\n';
       if (m_ecp) {
         //get list of ecp atoms
         //int necp = getNEcpAtoms(ui.lineEdit_ecp->text());
         ecpType t1 = (NWChemInputDialog::ecpType) ui.comboBox_ecp->currentIndex();
         QStringList strl = ui.lineEdit_ecp->text().split(",",QString::SkipEmptyParts);
+        str += "  * library " + getBasisType(t)+" except ";
+        for (int i=0; i<strl.count(); i++) {
+          str += strl.at(i)+" ";
+        }
+        str += "\n";
+
         for (int i=0; i<strl.count(); i++) {
           str += "  "+strl.at(i)+" library "+getEcpType(t1) +"\n";
         }
@@ -954,7 +981,7 @@ namespace Avogadro
 
     // Job - CTC
     if (m_rtRestart || m_restartMain) {
-      mol << "restart "<< m_job <<" \n";
+      mol << "restart "<< m_restartJobName <<" \n";
     } else {
       mol << "start "<< m_job <<" \n";
     }
@@ -1395,7 +1422,10 @@ namespace Avogadro
       str += " limitxyz\n  -"+QString::number(ui.spinBox_cubemm1->value())+" "+QString::number(ui.spinBox_cubemm1->value()) +" "+QString::number(ui.spinBox_cubep1->value())+"\n";
       str += "  -"+QString::number(ui.spinBox_cubemm2->value())+" "+QString::number(ui.spinBox_cubemm2->value())+" "+QString::number(ui.spinBox_cubep2->value())+"\n";
       str += "  -"+QString::number(ui.spinBox_cubemm3->value())+" "+QString::number(ui.spinBox_cubemm3->value())+" "+QString::number(ui.spinBox_cubep3->value())+"\n";
-      str += " gaussian\n spin "+ getSpinType(m_plotspin ) +"\n vectors "+m_job+".movecs\n";
+      if (!m_restartMain )
+        str += " gaussian\n spin "+ getSpinType(m_plotspin ) +"\n vectors "+m_job+".movecs\n";
+      else
+        str += " gaussian\n spin "+ getSpinType(m_plotspin ) +"\n vectors "+m_restartJobName+".movecs\n";
       str += " orbitals view; 1; "+QString::number(i)+"\n";
       str += " output "+str1+"\nend\n";
       str += "task dplot\n\n";
@@ -1411,7 +1441,10 @@ namespace Avogadro
       str += " limitxyz\n  -"+QString::number(ui.spinBox_cubemm1->value())+" "+QString::number(ui.spinBox_cubemm1->value()) +" "+QString::number(ui.spinBox_cubep1->value())+"\n";
       str += "  -"+QString::number(ui.spinBox_cubemm2->value())+" "+QString::number(ui.spinBox_cubemm2->value())+" "+QString::number(ui.spinBox_cubep2->value())+"\n";
       str += "  -"+QString::number(ui.spinBox_cubemm3->value())+" "+QString::number(ui.spinBox_cubemm3->value())+" "+QString::number(ui.spinBox_cubep3->value())+"\n";
-      str += " gaussian\n spin "+ getSpinType(m_plotspin ) +"\n vectors "+m_job+".movecs\n";
+      if (!m_restartMain)
+        str += " gaussian\n spin "+ getSpinType(m_plotspin ) +"\n vectors "+m_job+".movecs\n";
+      else
+        str += " gaussian\n spin "+ getSpinType(m_plotspin ) +"\n vectors "+m_restartJobName+".movecs\n";
       str += " output "+str1+"\nend\n";
       str += "task dplot\n\n";
 
@@ -1426,7 +1459,10 @@ namespace Avogadro
       str += " limitxyz\n  -"+QString::number(ui.spinBox_cubemm1->value())+" "+QString::number(ui.spinBox_cubemm1->value()) +" "+QString::number(ui.spinBox_cubep1->value())+"\n";
       str += "  -"+QString::number(ui.spinBox_cubemm2->value())+" "+QString::number(ui.spinBox_cubemm2->value())+" "+QString::number(ui.spinBox_cubep2->value())+"\n";
       str += "  -"+QString::number(ui.spinBox_cubemm3->value())+" "+QString::number(ui.spinBox_cubemm3->value())+" "+QString::number(ui.spinBox_cubep3->value())+"\n";
-      str += " gaussian\n spin "+ getSpinType(m_plotspin ) +"\n vectors "+m_job+".movecs\n";
+      if (!m_restartMain)
+        str += " gaussian\n spin "+ getSpinType(m_plotspin ) +"\n vectors "+m_job+".movecs\n";
+      else
+        str += " gaussian\n spin "+ getSpinType(m_plotspin ) +"\n vectors "+m_restartJobName+".movecs\n";
       if (i<10)
         str += " densmat "+m_job+".tdens_00000"+QString::number(i)+"\n";
       else if (i>9 && i<100)

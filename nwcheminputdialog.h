@@ -119,6 +119,7 @@ namespace Avogadro
     QString printTask(theoryType);
     QString getEcpType(ecpType);
     QString printProp();
+    QString m_restartJobName;
     QStringList getEcpAtoms();
     int getNEcpAtoms(QString);
 
@@ -199,6 +200,7 @@ namespace Avogadro
     void setPropEgrad(bool);
     void setPropNbo(bool);
     void setProp(bool);
+    void restartJobNameChanged(QString);
   };
 }
 
